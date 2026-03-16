@@ -1,0 +1,25 @@
+.text-bg-secondary {
+    background: #eeeeee !important;
+}
+
+/* Purchase page */
+.table-wrapper .table th,
+.table-wrapper .table td {
+    vertical-align: middle;
+}
+
+.table-wrapper .table td {
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+}
+
+.purchase-actions {
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .purchase-actions {
+        width: min(420px, 45%);
+        margin-top: 0 !important;
+    }
+}
