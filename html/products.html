@@ -1,0 +1,555 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product-Dashboard</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="css/responsive.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        background-color: #e2e8f0;
+        font-family: inter;
+        /* overflow: hidden;  */
+      }
+      .deleteTaskBtn {
+        text-align: center;
+        padding: 2px;
+        outline: 0;
+        border: 0;
+        display: inline-block;
+        position: absolute;
+        right: 6px;
+        top: 15%;
+        color: #6324eb;
+      }
+      .deleteTaskBtn:hover {
+        cursor: pointer;
+        color: rgb(17, 17, 17);
+      }
+      .categoryBtn {
+        /* height: 25px; */
+        box-shadow: 0px 0px 10px rgba(233, 231, 231, 0.974);
+        padding: 5px;
+        position: relative;
+        margin-top: 10px;
+        color: #6324eb;
+        background-color: #6324eb1a;
+        border-color: #6324eb33 1px solid;
+      }
+      .w-10 {
+        width: 10%;
+      }
+      .w-add {
+        width: 20vw;
+      }
+
+      @media (max-width: 576px) {
+        .w-add {
+          width: 60vw;
+        }
+      }
+
+      .categoriescard {
+        border-radius: 24px;
+        overflow: hidden;
+      }
+      .addcategorybtn {
+        background-color: #6324eb;
+        color: #ffffff;
+      }
+      .tablediv {
+        border-radius: 24px;
+        background-color: #ffffff;
+      }
+      .search-box {
+        position: relative;
+        width: 300px;
+      }
+
+      .search-box i {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: gray;
+      }
+
+      .search-box input {
+        width: 100%;
+        padding-left: 35px;
+        background-color: #f8fafc;
+        color: #6b7280;
+      }
+      .tablestyle {
+        --bs-table-striped-bg: #fdf2f880;
+      }
+
+      .color-icon {
+        color: #94a3b8;
+        cursor: pointer;
+        margin: 0 5px;
+        transition: 0.2s;
+      }
+      .color-icon:hover {
+        color: #475569;
+      }
+
+      /********stock style********/
+      .badge.instock {
+        background-color: #dcfce7;
+        color: #15803d;
+        font-size: 15px;
+        border-radius: 20px;
+      }
+      tbody tr .Qtyinstock {
+        color: #15803d;
+      }
+      .badge.lowstock {
+        background-color: #fce7f3;
+        color: #be185d;
+        font-size: 15px;
+        border-radius: 20px;
+      }
+      tbody tr .Qtylowstock {
+        color: #be185d;
+      }
+      .badge.atlimit {
+        background-color: #fef3c7;
+        color: #b45309;
+        font-size: 15px;
+        border-radius: 20px;
+      }
+      tbody tr .Qtyatlimit {
+        color: #b45309;
+      }
+      /****************************/
+      tbody tr .SKU {
+        color: #6324eb;
+      }
+      tbody tr {
+        font-weight: 600;
+      }
+      table {
+        border-collapse: collapse;
+      }
+
+      table td,
+      table th {
+        border: 1px solid #e2e8f0;
+        padding: 16px;
+      }
+      .tableheader th {
+        background-color: #f8fafc;
+        color: #64748b;
+      }
+      tbody tr .cellstyle {
+        color: #475569;
+      }
+
+      /* Hidden form */
+      .form-container {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        z-index: 1000;
+        width: 400px;
+      }
+
+      body::after {
+        content: "";
+        display: none;
+      }
+
+      .form-container.active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- As a heading -->
+    <nav class="navbar navbar-light bg-light">
+      <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1"
+          >Dashboard / <span style="color: #6324eb">Products</span>
+        </span>
+      </div>
+    </nav>
+    <div
+      class="container-fluid w-100 h-100 d-flex flex-column justify-content-start align-items-start"
+    >
+      <!-- categories -->
+      <div class="categoriescard card w-100 my-3">
+        <div class="card-header fw-bolder bg-white fs-4">Categories</div>
+        <div class="card-body">
+          <!-- categories Btn -->
+          <div
+            class="container-fluid d-flex flex-md-row justify-content-start align-items-center w-100 gap-4"
+          >
+            <div
+              class="border categoryBtn rounded-pill btn-secondary d-flex flex-md-row justify-content-center align-items-center w-auto px-3"
+            >
+              <span class="me-4">Electronics</span>
+              <span class="deleteTaskBtn">✕</span>
+            </div>
+            <div
+              class="border categoryBtn rounded-pill btn-secondary d-flex flex-md-row justify-content-center align-items-center w-auto px-3"
+            >
+              <span class="me-4">Storage</span>
+              <span class="deleteTaskBtn">✕</span>
+            </div>
+
+            <div
+              class="border categoryBtn rounded-pill btn-secondary d-flex flex-md-row justify-content-center align-items-center w-auto px-3"
+            >
+              <span class="me-4">Accessories</span>
+              <span class="deleteTaskBtn">✕</span>
+            </div>
+
+            <div
+              class="border categoryBtn rounded-pill btn-secondary d-flex flex-md-row justify-content-center align-items-center w-auto px-3"
+            >
+              <span class="me-4">Networking</span>
+              <span class="deleteTaskBtn">✕</span>
+            </div>
+          </div>
+
+          <form class="d-flex justify-content-end mt-4">
+            <input
+              class="form-control me-2 w-add rounded-pill"
+              type="search"
+              placeholder="New category name..."
+              aria-label="Search"
+            />
+            <button
+              class="addcategorybtn rounded-pill btn btn-outline-success"
+              type="submit"
+            >
+              + Add
+            </button>
+          </form>
+        </div>
+      </div>
+      <!-- body table section -->
+      <div class="tablediv container-fluid w-100 p-4">
+        <div
+          class="addproductbtn container-fluid d-flex justify-content-between align-items-center mb-3 w-100"
+        >
+          <!-- search product -->
+          <div class="search-box position-relative w-25">
+            <i
+              class="fa-solid fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
+            ></i>
+            <input
+              class="form-control rounded-pill ps-5 w-100"
+              type="search"
+              placeholder="Search products, SKUs, or suppliers..."
+            />
+          </div>
+
+          <!-- add product btn-->
+          <button
+            class="addcategorybtn btn btn-outline-success rounded-pill"
+            id="openFormBtn"
+          >
+            + Add Product
+          </button>
+
+          <!-- *****************Product Form (Hidden)*********************** -->
+          <div id="productFormContainer" class="form-container">
+            <form id="productForm" class="p-4 shadow rounded bg-white">
+              <h4 class="mb-3">Add Product</h4>
+
+              <!-- product Info -->
+              <input
+                type="text"
+                placeholder="Product Name"
+                class="form-control mb-2"
+                required
+              />
+
+              <!-- Category & Supplier -->
+              <select class="form-control mb-2 text-secondary" required>
+                <option value="">Category</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Storage">Storage</option>
+              </select>
+
+              <select class="form-control mb-2 text-secondary" required>
+                <option value="">Supplier</option>
+              </select>
+
+              <!-- Pricing -->
+              <input
+                type="number"
+                id="cost"
+                placeholder="Cost Price"
+                class="form-control mb-2"
+                required
+                min="1"
+              />
+
+              <!-- Inventory -->
+              <input
+                type="number"
+                id="qty"
+                placeholder="Quantity"
+                class="form-control mb-2"
+                required
+                min="1"
+              />
+              <input
+                type="number"
+                id="reorder"
+                placeholder="Reorder Level"
+                class="form-control mb-2"
+                required
+                min="1"
+              />
+
+              <!-- buttons -->
+              <div class="d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-success">Save</button>
+                <button
+                  type="button"
+                  id="closeFormBtn"
+                  class="btn btn-secondary"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- table section -->
+        <table class="table table-striped tablestyle">
+          <thead class="tableheader">
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">SKU</th>
+              <th scope="col">Category</th>
+              <th scope="col">Supplier</th>
+              <th scope="col">Price</th>
+              <th scope="col">Qty</th>
+              <th scope="col">Reorder</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="name" scope="row">Laptop Stand</td>
+              <td class="SKU">ACC-001</td>
+              <td class="cellstyle category">Accessories</td>
+              <td class="cellstyle supplier">TechSupplyCo.</td>
+              <td class="price">$45.00</td>
+              <td class="Qtyatlimit qty">14</td>
+              <td class="reorder">20</td>
+              <td>
+                <span class="badge atlimit">AT LIMIT</span>
+              </td>
+              <td>
+                <i
+                  class="fa-solid fa-pen color-icon edit-btn"
+                  data-id="889"
+                ></i>
+                <i class="fa-solid fa-trash color-icon"></i>
+              </td>
+            </tr>
+            <tr>
+              <td scope="row">Laptop Stand</td>
+              <td class="SKU">ACC-001</td>
+              <td class="cellstyle">Accessories</td>
+              <td class="cellstyle">TechSupplyCo.</td>
+              <td>$45.00</td>
+              <td class="Qtylowstock">2</td>
+              <td>20</td>
+              <td>
+                <span class="badge lowstock">LOW STOCK</span>
+              </td>
+              <td>
+                <i class="fa-solid fa-pen color-icon edit-btn"></i>
+                <i class="fa-solid fa-trash color-icon"></i>
+              </td>
+            </tr>
+            <tr>
+              <td scope="row">Laptop Stand</td>
+              <td class="SKU">ACC-001</td>
+              <td class="cellstyle">Accessories</td>
+              <td class="cellstyle">TechSupplyCo.</td>
+              <td>$45.00</td>
+              <td>124</td>
+              <td>20</td>
+              <td>
+                <span class="badge instock">IN STOCK</span>
+              </td>
+              <td>
+                <i class="fa-solid fa-pen color-icon edit-btn"></i>
+                <i class="fa-solid fa-trash color-icon"></i>
+              </td>
+            </tr>
+            <tr>
+              <td scope="row">Laptop Stand</td>
+              <td class="SKU">ACC-001</td>
+              <td class="cellstyle">Accessories</td>
+              <td class="cellstyle">TechSupplyCo.</td>
+              <td>$45.00</td>
+              <td class="Qtyatlimit">12</td>
+              <td>20</td>
+              <td>
+                <span class="badge atlimit">AT LIMIT</span>
+              </td>
+              <td>
+                <i class="fa-solid fa-pen color-icon edit-btn"></i>
+                <i class="fa-solid fa-trash color-icon"></i>
+              </td>
+            </tr>
+            <tr>
+              <td scope="row">Laptop Stand</td>
+              <td class="SKU">ACC-001</td>
+              <td class="cellstyle">Accessories</td>
+              <td class="cellstyle">TechSupplyCo.</td>
+              <td>$45.00</td>
+              <td>124</td>
+              <td>20</td>
+              <td>
+                <span class="badge instock">IN STOCK</span>
+              </td>
+              <td>
+                <i
+                  class="fa-solid fa-pen color-icon edit-btn"
+                  data-id="123"
+                ></i>
+                <i class="fa-solid fa-trash color-icon"></i>
+              </td>
+            </tr>
+            <tr>
+              <td scope="row">Laptop Stand</td>
+              <td class="SKU">ACC-001</td>
+              <td class="cellstyle">Accessories</td>
+              <td class="cellstyle">TechSupplyCo.</td>
+              <td>$45.00</td>
+              <td class="Qtylowstock">4</td>
+              <td>20</td>
+              <td>
+                <span class="badge lowstock">LOW STOCK</span>
+              </td>
+              <td>
+                <i
+                  class="fa-solid fa-pen color-icon edit-btn"
+                  data-id="453"
+                ></i>
+                <i class="fa-solid fa-trash color-icon"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- *****************Edit Product Form (Hidden)*********************** -->
+      <div id="editFormContainer" class="form-container">
+        <form id="editProductForm" class="p-4 shadow rounded bg-white">
+          <h4 class="mb-3">Edit Product</h4>
+
+          <!-- Hidden field to store product ID -->
+          <input type="hidden" id="editProductId" />
+
+          <!-- Product Info -->
+          <input
+            type="text"
+            id="editName"
+            placeholder="Product Name"
+            class="form-control mb-2"
+            required
+          />
+
+          <!-- Category & Supplier -->
+          <select
+            id="editCategory"
+            class="form-control mb-2 text-secondary"
+            required
+          >
+            <option value="">Category</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Storage">Storage</option>
+          </select>
+
+          <select
+            id="editSupplier"
+            class="form-control mb-2 text-secondary"
+            required
+          >
+            <option value="">Supplier</option>
+            <option value="Supplier A">TechSupplyCo.</option>
+          </select>
+
+          <!-- Pricing -->
+          <input
+            type="number"
+            id="editCost"
+            placeholder="Cost Price"
+            class="form-control mb-2"
+            required
+            min="1"
+          />
+
+          <!-- Inventory -->
+          <input
+            type="number"
+            id="editQty"
+            placeholder="Quantity"
+            class="form-control mb-2"
+            required
+            min="0"
+          />
+          <input
+            type="number"
+            id="editReorder"
+            placeholder="Reorder Level"
+            class="form-control mb-2"
+            required
+            min="0"
+          />
+
+          <!-- Status (calculated automatically) -->
+          <p id="editStatus" class="fw-bold"></p>
+
+          <!-- Buttons -->
+          <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-success">Update</button>
+            <button
+              type="button"
+              id="closeEditFormBtn"
+              class="btn btn-secondary"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <script src="../js/modules/products.js"></script>
+  </body>
+</html>
