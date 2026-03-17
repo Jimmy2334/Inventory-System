@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reports</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <style>
+      body {
+        background-color: #f4f6f9;
+      }
+
+      /* Tab buttons */
+      .report-tab-btn {
+        border: 1px solid #dee2e6;
+        background: #fff;
+        color: #495057;
+        border-radius: 6px;
+        padding: 6px 16px;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .report-tab-btn:hover {
+        background: #f0f4ff;
+      }
+      .report-tab-btn.active {
+        border-color: #0d6efd;
+        color: #0d6efd;
+        background: #fff;
+        font-weight: 500;
+      }
+
+      /* Alert */
+      .alert-restock {
+        background-color: #fde8e8;
+        border: 1px solid #f5c6c6;
+        border-radius: 8px;
+        color: #842029;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+      }
+
+      /* Tables */
+      .report-table thead tr th {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #6c757d;
+        border-bottom: 1px solid #dee2e6;
+      }
+      .report-table tbody tr td {
+        vertical-align: middle;
+        font-size: 0.9rem;
+      }
+
+      /* Low-stock row highlight */
+      .row-warning {
+        background-color: #fffbea !important;
+      }
+
+      /* SKU badge */
+      .sku-badge {
+        color: #0d6efd;
+        font-size: 0.82rem;
+        font-family: monospace;
+      }
+
+      /* Shortage badge */
+      .shortage-badge {
+        display: inline-block;
+        background-color: #ffc107;
+        color: #212529;
+        font-size: 0.78rem;
+        font-weight: 600;
+        border-radius: 20px;
+        padding: 3px 10px;
+      }
+      .shortage-badge.zero {
+        background-color: #ffc107;
+        opacity: 0.65;
+      }
+
+      /* Inventory value */
+      .total-value-row td {
+        font-weight: 600;
+        background-color: #f8f9fa;
+      }
+      .text-green {
+        color: #28a745;
+        font-weight: 600;
+      }
+
+      .card-section-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section id="reports-section" class="container-fluid">
+        <div class="px-3 pt-4">
+          <!-- Tab Buttons -->
+          <div class="d-flex gap-2 mb-3">
+            <button class="report-tab-btn active" id="tab-lowstock" onclick="showTab('lowstock')">
+              <i class="fas fa-triangle-exclamation me-1"></i> Low-stock report
+            </button>
+            <button class="report-tab-btn" id="tab-inventory" onclick="showTab('inventory')">
+              <i class="fas fa-dollar-sign me-1"></i> Inventory value report
+            </button>
+          </div>
+
+          <!-- ======================== LOW-STOCK REPORT ======================== -->
+          <div id="view-lowstock">
+            <!-- Alert -->
+            <div class="alert-restock mb-3">
+              <i class="fas fa-triangle-exclamation me-2"></i>
+              <strong>3 products</strong> are below their reorder level and need restocking.
+            </div>
+
+            <!-- Card -->
+            <div class="card shadow-sm px-3 py-4">
+              <div class="card-section-title border-bottom pb-3 mb-3">
+                <i class="fas fa-triangle-exclamation text-warning"></i>
+                Products requiring restock
+              </div>
+              <div class="table-responsive">
+                <table class="table report-table table-hover">
+                  <thead>
+                    <tr class="table-secondary">
+                      <th>Product</th>
+                      <th>SKU</th>
+                      <th class="text-center">Current QTY</th>
+                      <th class="text-center">Reorder Level</th>
+                      <th class="text-center">Shortage</th>
+                      <th>Supplier</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="row-warning">
+                      <td>HDMI Cable</td>
+                      <td><span class="sku-badge">CB-005</span></td>
+                      <td class="text-center">3</td>
+                      <td class="text-center">15</td>
+                      <td class="text-center"><span class="shortage-badge">-12 units</span></td>
+                      <td>TechWorld Ltd</td>
+                    </tr>
+                    <tr class="row-warning">
+                      <td>USB-C Hub</td>
+                      <td><span class="sku-badge">USB-009</span></td>
+                      <td class="text-center">2</td>
+                      <td class="text-center">10</td>
+                      <td class="text-center"><span class="shortage-badge">-8 units</span></td>
+                      <td>TechWorld Ltd</td>
+                    </tr>
+                    <tr>
+                      <td>Wireless Mouse</td>
+                      <td><span class="sku-badge">MS-011</span></td>
+                      <td class="text-center">5</td>
+                      <td class="text-center">5</td>
+                      <td class="text-center"><span class="shortage-badge zero">-0 units</span></td>
+                      <td>TechWorld Ltd</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ======================== INVENTORY VALUE REPORT ======================== -->
+          <div id="view-inventory" style="display:none;">
+            <div class="card shadow-sm px-3 py-4">
+              <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+                <div class="card-section-title">
+                  <i class="fas fa-dollar-sign text-secondary"></i>
+                  Inventory value breakdown
+                </div>
+                <span class="text-green fs-6">$6738.97</span>
+              </div>
+              <div class="table-responsive">
+                <table class="table report-table table-hover">
+                  <thead>
+                    <tr class="table-secondary">
+                      <th>Product</th>
+                      <th>SKU</th>
+                      <th>Category</th>
+                      <th class="text-end">Unit Price</th>
+                      <th class="text-center">QTY</th>
+                      <th class="text-end">Stock Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Laptop Stand</td>
+                      <td><span class="sku-badge">LS-001</span></td>
+                      <td>Accessories</td>
+                      <td class="text-end">$34.99</td>
+                      <td class="text-center">25</td>
+                      <td class="text-end">$874.75</td>
+                    </tr>
+                    <tr>
+                      <td>USB-C Hub</td>
+                      <td><span class="sku-badge">USB-009</span></td>
+                      <td>Electronics</td>
+                      <td class="text-end">$49.99</td>
+                      <td class="text-center">2</td>
+                      <td class="text-end">$99.98</td>
+                    </tr>
+                    <tr>
+                      <td>Mechanical Keyboard</td>
+                      <td><span class="sku-badge">KB-003</span></td>
+                      <td>Electronics</td>
+                      <td class="text-end">$89.99</td>
+                      <td class="text-center">18</td>
+                      <td class="text-end">$1619.82</td>
+                    </tr>
+                    <tr>
+                      <td>Wireless Mouse</td>
+                      <td><span class="sku-badge">MS-011</span></td>
+                      <td>Electronics</td>
+                      <td class="text-end">$24.99</td>
+                      <td class="text-center">5</td>
+                      <td class="text-end">$124.95</td>
+                    </tr>
+                    <tr>
+                      <td>Monitor 24"</td>
+                      <td><span class="sku-badge">MN-002</span></td>
+                      <td>Electronics</td>
+                      <td class="text-end">$219.00</td>
+                      <td class="text-center">9</td>
+                      <td class="text-end">$1971.00</td>
+                    </tr>
+                    <tr>
+                      <td>HDMI Cable</td>
+                      <td><span class="sku-badge">CB-005</span></td>
+                      <td>Accessories</td>
+                      <td class="text-end">$12.99</td>
+                      <td class="text-center">23</td>
+                      <td class="text-end">$298.77</td>
+                    </tr>
+                    <tr>
+                      <td>Notebook Pack</td>
+                      <td><span class="sku-badge">NB-020</span></td>
+                      <td>Stationery</td>
+                      <td class="text-end">$8.50</td>
+                      <td class="text-center">80</td>
+                      <td class="text-end">$680.00</td>
+                    </tr>
+                    <tr>
+                      <td>USB Flash Drive 64GB</td>
+                      <td><span class="sku-badge">FD-064</span></td>
+                      <td>Storage</td>
+                      <td class="text-end">$18.99</td>
+                      <td class="text-center">30</td>
+                      <td class="text-end">$569.70</td>
+                    </tr>
+                    <tr>
+                      <td>RED HAT University</td>
+                      <td><span class="sku-badge">JB-007</span></td>
+                      <td>Accessories</td>
+                      <td class="text-end">$50.00</td>
+                      <td class="text-center">10</td>
+                      <td class="text-end">$500.00</td>
+                    </tr>
+                    <tr class="total-value-row">
+                      <td colspan="5" class="text-end">Total inventory value</td>
+                      <td class="text-end text-green">$6738.97</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function showTab(tab) {
+        document.getElementById('view-lowstock').style.display = tab === 'lowstock' ? 'block' : 'none';
+        document.getElementById('view-inventory').style.display = tab === 'inventory' ? 'block' : 'none';
+        document.getElementById('tab-lowstock').classList.toggle('active', tab === 'lowstock');
+        document.getElementById('tab-inventory').classList.toggle('active', tab === 'inventory');
+      }
+    </script>
+  </body>
+</html>
