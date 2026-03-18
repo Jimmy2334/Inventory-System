@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvenTrack</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-cube"></i>
+                <h2>InvenTrack</h2>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-link active" data-page="dashboard">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-link" data-page="products">
+                <i class="fas fa-boxes"></i>
+                <span>Products</span>
+            </a>
+            <a href="#" class="nav-link" data-page="suppliers">
+                <i class="fas fa-users"></i>
+                <span>Suppliers</span>
+            </a>
+            <a href="#" class="nav-link" data-page="orders">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Purchase orders</span>
+            </a>
+            <a href="#" class="nav-link" data-page="adjustments">
+                <i class="fas fa-sliders-h"></i>
+                <span>Adjustments</span>
+            </a>
+            <a href="#" class="nav-link" data-page="reports">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reports</span>
+            </a>
+            <a href="#" class="nav-link" data-page="activity">
+                <i class="fas fa-history"></i>
+                <span>Activity log</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn-logout">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <header class="navbar">
+            <h1>InvenTrack</h1>
+            <div class="user-info">
+                <span class="user-name">Admin User</span>
+                <span class="user-email">admin@inventrack.com</span>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <div class="page" id="page-dashboard" style="display: block;">
+                <h1>Dashboard</h1>
+                <p>Dashboard content here</p>
+            </div>
+            <div class="page" id="page-products" style="display: none;">
+                <h1>Products</h1>
+                <p>Products content here</p>
+            </div>
+            <div class="page" id="page-suppliers" style="display: none;">
+                <h1>Suppliers</h1>
+                <p>Suppliers content here</p>
+            </div>
+            <div class="page" id="page-orders" style="display: none;">
+                <h1>Purchase Orders</h1>
+                <p>Orders content here</p>
+            </div>
+            <div class="page" id="page-adjustments" style="display: none;">
+                <h1>Adjustments</h1>
+                <p>Adjustments content here</p>
+            </div>
+            <div class="page" id="page-reports" style="display: none;">
+                <h1>Reports</h1>
+                <p>Reports content here</p>
+            </div>
+            <div class="page" id="page-activity" style="display: none;">
+                <h1>Activity Log</h1>
+                <p>Activity content here</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
