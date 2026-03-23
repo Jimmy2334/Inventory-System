@@ -1,0 +1,430 @@
+import { ProductService } from "../services/ProductService.js";
+import { CategoryService } from "../services/CategoryService.js";
+
+export class ProductView {
+  constructor() {
+    this.productService = new ProductService();
+    this.categoryService = new CategoryService();
+  }
+  tempalte() {
+    const products = this.productService.getAll();
+    const categories = this.categoryService.getAll();
+    document.getElementById("page-title").innerText = "Products";
+    return `
+    
+      <!-- ── Categories Card ── -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <i class="bi bi-tags me-2"></i>Categories
+              </div>
+              <div class="card-body">
+                <div id="categories-list" class="mb-3">
+  ${
+    categories.length === 0
+      ? `<span class="text-muted">No categories yet</span>`
+      : categories
+          .map(
+            (
+              c,
+            ) => `     <span class="badge bg-secondary me-2 mb-2 py-2 px-3 category-badge" style="font-size: 13px">
+                        <span class="btn-edit-category" data-category="${c}" 
+                            style="cursor:pointer;" title="Click to edit">
+                            ${c}
+                        </span>
+                        <button type="button"
+                            class="btn-close btn-close-white ms-2 btn-delete-category"
+                            style="font-size: 9px"
+                            data-category="${c}"
+                            title="Delete">
+                        </button>
+                    </span>
+          `,
+          )
+          .join("")
+  }
+          </div>
+
+          <!-- Add category input -->
+                <div class="d-flex gap-2" style="max-width: 380px">
+                  <input
+                    type="text"
+                    id="new-category-input"
+                    class="form-control"
+                    placeholder="New category name…"
+                  />
+                  <button
+                    id="btn-add-category"
+                    class="btn btn-outline-primary text-nowrap"
+                  >
+                    <i class="bi bi-plus-lg me-1"></i>Add
+                  </button>
+                </div>
+          <div id="category-error" class="text-danger mt-2 d-none" style="font-size:13px;"></div>
+        </div>
+      </div>
+
+      <!-- ── Products Card ── -->
+      <div class="card">
+        <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <span><i class="bi bi-box-seam me-2"></i>Products</span>
+          <div class="d-flex gap-2 align-items-center">
+            <div class="search-wrapper">
+              <i class="bi bi-search"></i>
+              <input type="text" id="product-search" class="form-control form-control-sm"
+                placeholder="Search products…" style="width:200px;"/>
+            </div>
+            <button id="btn-add-product" class="btn btn-primary btn-sm"
+              data-bs-toggle="modal" data-bs-target="#productModal">
+              <i class="bi bi-plus-lg me-1"></i>Add product
+            </button>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive-wrapper">
+            <table class="table mb-0">
+              <thead>
+                <tr>
+                  <th>Name</th><th>SKU</th><th>Category</th><th>Supplier</th>
+                  <th>Price</th><th>Qty</th><th>Reorder</th><th>Status</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="products-tbody">
+                ${this.renderRows(products)}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Product Modal ── -->
+<div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="productModalLabel">Add product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!--  form -->
+      <form id="productForm" >
+        <div class="modal-body">
+          <div id="productFormError" class="alert alert-danger d-none mb-3" style="font-size:13px;"></div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Product name <span class="text-danger">*</span></label>
+              <input type="text" id="product-name" class="form-control" placeholder="e.g. Wireless Keyboard" required/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">SKU (unique) <span class="text-danger">*</span></label>
+              <input type="text" id="product-sku" class="form-control" placeholder="e.g. KB-007" required/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Category <span class="text-danger">*</span></label>
+              <select id="product-category" class="form-select" required>
+                <option value="">-- Select category --</option>
+                ${categories.map((c) => `<option value="${c}">${c}</option>`).join("")}
+              </select>
+            </div>
+            <!--  /****************add required*************/  -->
+            <div class="col-md-6">
+              <label class="form-label">Supplier</label>
+              <select id="product-supplier" class="form-select" >
+                <option value="">-- Select supplier --</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Price ($) <span class="text-danger">*</span></label>
+              <input type="number" id="product-price" class="form-control" min="0" step="0.01" placeholder="0.00" required/>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Quantity <span class="text-danger">*</span></label>
+              <input type="number" id="product-qty" class="form-control" min="0" placeholder="0" required/>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Reorder level <span class="text-danger">*</span></label>
+              <input type="number" id="product-reorder" class="form-control" min="0" placeholder="0" required/>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+         
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-lg me-1"></i>Save product
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+    `;
+  }
+
+  renderRows(products) {
+    if (products.length === 0) {
+      return `<tr><td colspan="9" class="text-center text-muted">No products found</td></tr>`;
+    }
+    const productsData = products
+      .map((product) => {
+        //style for product row and status
+        const { rowClass, badgeClass, statusText } = this.getStatus(product);
+        return `
+        <tr class="${rowClass}">
+          <td>${product.name}</td>
+          <td><code>${product.sku}</code></td>
+          <td>${product.category}</td>
+          <td>${product.supplier ?? "--"}</td>
+          <td>$${product.price}</td>
+          <td>${product.qty}</td>
+          <td>${product.reorder}</td>
+          <td><span class="badge ${badgeClass}">${statusText}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary me-1 btn-edit"  data-bs-toggle="modal" data-bs-target="#productModal" data-id="${product.id}">
+    
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger btn-delete-product" data-id="${product.id}">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+      })
+      .join("");
+    return productsData;
+  }
+
+  getStatus(product) {
+    if (product.qty < product.reorder) {
+      return {
+        rowClass: "table-danger",
+        badgeClass: "bg-danger",
+        statusText: "Low stock",
+      };
+    } else if (product.qty === product.reorder) {
+      return {
+        rowClass: "table-warning",
+        badgeClass: "bg-warning text-dark",
+        statusText: "At limit",
+      };
+    } else {
+      return { rowClass: "", badgeClass: "bg-success", statusText: "OK" };
+    }
+  }
+  /**************************************************Events*************************************************** */
+  attachEvents() {
+    // Add category event
+    document
+      .getElementById("btn-add-category")
+      .addEventListener("click", () => {
+        const newCategory = document.getElementById("new-category-input");
+        const error = document.getElementById("category-error");
+        try {
+          //check if input is empty
+          if (!newCategory.value.trim()) {
+            new Error("Category is empty");
+          }
+          this.categoryService.add(newCategory.value.trim());
+          //clear input
+          newCategory.value = "";
+          //hide error div
+          error.classList.add("d-none");
+          this.render(this.container);
+        } catch (err) {
+          error.textContent = err.message;
+          error.classList.remove("d-none");
+        }
+      });
+
+    // Delete category event
+    document.querySelectorAll(".btn-delete-category").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const error = document.getElementById("category-error");
+        const category = e.currentTarget.dataset.category;
+        e.currentTarget.blur();
+        if (
+          !confirm(`Are you sure you want to delete "${category}" category?`)
+        ) {
+          return;
+        }
+
+        try {
+          this.categoryService.delete(category);
+          //hide error div
+          error.classList.add("d-none");
+          this.render(this.container);
+        } catch (err) {
+          error.textContent = err.message;
+          error.classList.remove("d-none");
+        }
+      });
+    });
+    // edit category event
+    document.querySelectorAll(".btn-edit-category").forEach((categoryName) => {
+      categoryName.addEventListener("click", (e) => {
+        const oldCategory = e.currentTarget.dataset.category;
+        //replace category name with input
+        const badge = e.currentTarget.closest(".category-badge");
+        badge.innerHTML = `<input type="text" 
+                class="form-control form-control-sm d-inline-block" 
+                style="width: 120px; font-size: 13px;"
+                value="${oldCategory}"
+                id="edit-category-input-${oldCategory}"
+            />
+            <button class="btn btn-sm btn-success ms-1 btn-confirm-edit" data-old="${oldCategory}">
+                <i class="bi bi-check"></i>
+            </button>
+            <button class="btn btn-sm btn-danger ms-1 btn-cancel-edit">
+                <i class="bi bi-x"></i>
+            </button>`;
+        //confirm btn for edit
+        badge
+          .querySelector(".btn-confirm-edit")
+          .addEventListener("click", (e) => {
+            const newCategory = badge.querySelector("input").value.trim();
+            const error = document.getElementById("category-error");
+            try {
+              //check if input is empty
+              if (!newCategory) {
+                new Error("Category is empty");
+              }
+              this.categoryService.edit(oldCategory, newCategory);
+              //hide error div
+              error.classList.add("d-none");
+              this.render(this.container);
+            } catch (err) {
+              error.textContent = err.message;
+              error.classList.remove("d-none");
+            }
+          });
+        //cancle btn for edit
+        badge
+          .querySelector(".btn-cancel-edit")
+          .addEventListener("click", (e) => {
+            this.render(this.container);
+          });
+      });
+    });
+    // Add  , edit submit product event
+    document.getElementById("productForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const error = document.getElementById("productFormError");
+      const form = document.getElementById("productForm");
+
+      try {
+        const product = {
+          name: document.getElementById("product-name").value.trim(),
+          sku: document.getElementById("product-sku").value.trim(),
+          category: document.getElementById("product-category").value,
+          supplier: document.getElementById("product-supplier").value,
+          price: parseFloat(document.getElementById("product-price").value),
+          qty: parseInt(document.getElementById("product-qty").value),
+          reorder: parseInt(document.getElementById("product-reorder").value),
+        };
+
+        const editProductId = form.dataset.editProductId;
+
+        if (editProductId) {
+          //  edit mode
+          this.productService.edit(editProductId, product);
+          delete form.dataset.editProductId; // clear after edit
+          document.getElementById("productModalLabel").textContent =
+            "Add product"; // reset title to add product
+        } else {
+          //add mode
+          this.productService.add(product);
+        }
+
+        bootstrap.Modal.getInstance(
+          document.getElementById("productModal"),
+        ).hide();
+        error.classList.add("d-none");
+        this.render(this.container);
+      } catch (err) {
+        error.textContent = err.message;
+        error.classList.remove("d-none");
+      }
+    });
+
+    //Delete product event
+    document.querySelectorAll(".btn-delete-product").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const id = e.currentTarget.dataset.id;
+        if (!confirm("Are you sure you want to delete this product?")) return;
+        try {
+          this.productService.delete(id);
+          this.render(this.container);
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    });
+
+    //Edit product event
+
+    document.querySelectorAll(".btn-edit").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const id = e.currentTarget.dataset.id;
+        const products = this.productService.getAll();
+        const editProduct = products.find((p) => p.id === id);
+        if (!editProduct) {
+          //   throw new Error("Product id not found");
+          return;
+        }
+        // store edit product id on the form
+        document.getElementById("productForm").dataset.editProductId =
+          editProduct.id;
+        //change product modal title
+        document.getElementById("productModalLabel").textContent =
+          "Edit Product";
+        //fill inputs with products data
+        document.getElementById("product-name").value = editProduct.name;
+        document.getElementById("product-sku").value = editProduct.sku;
+        document.getElementById("product-category").value =
+          editProduct.category;
+        document.getElementById("product-supplier").value =
+          editProduct.supplier;
+        document.getElementById("product-price").value = editProduct.price;
+        document.getElementById("product-qty").value = editProduct.qty;
+        document.getElementById("product-reorder").value = editProduct.reorder;
+      });
+    });
+    //add product event
+    document.getElementById("btn-add-product").addEventListener("click", () => {
+      const form = document.getElementById("productForm");
+      // clear edit  product id
+      delete form.dataset.editProductId;
+      form.reset();
+      document.getElementById("productModalLabel").textContent = "Add product";
+      // hide error
+      document.getElementById("productFormError").classList.add("d-none");
+    });
+
+    //search product event
+    document
+      .getElementById("product-search")
+      ?.addEventListener("input", (e) => {
+        const searchTerm = e.target.value.trim().toUpperCase();
+        const products = this.productService.getAll();
+
+        // filter products by name,sku,category
+        const filteredProducts = products.filter(
+          (p) =>
+            p.name.toUpperCase().includes(searchTerm) ||
+            p.sku.toUpperCase().includes(searchTerm) ||
+            p.category.toUpperCase().includes(searchTerm),
+        );
+
+        // updatethe tbody
+        document.getElementById("products-tbody").innerHTML =
+          this.renderRows(filteredProducts);
+      });
+  }
+  /******************************************************************************************************************* */
+  render(container) {
+    this.container = container; // save it
+    container.innerHTML = this.tempalte();
+    this.attachEvents();
+  }
+}
