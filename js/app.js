@@ -7,13 +7,13 @@ import { Router } from "./router.js";
 import { StorageManager } from "./utils/StorageManager.js";
 
 // ── View imports ─────────────────────────────────────────────────
-// import { DashboardView }      from './views/DashboardView.js';
+import { DashboardView } from "./views/DashboardView.js";
 // import { ProductView }        from './views/ProductView.js';
 // import { CategoryView }       from './views/CategoryView.js';
 // import { SupplierView }       from './views/SupplierView.js';
 // import { OrderView }          from './views/OrderView.js';
 import { StockAdjustView } from "./views/StockAdjustView.js";
-// import { ReportsView }        from './views/ReportsView.js';
+import { ReportsView } from "./views/ReportsView.js";
 // import { ActivityLogView }    from './views/ActivityLogView.js';
 
 // ════════════════════════════════════════════════════════════════
@@ -144,13 +144,13 @@ export function updateLowStockBadge() {
 //    and the href="#/..." on each nav link.
 // ════════════════════════════════════════════════════════════════
 const routes = {
-  // '#/dashboard'   : DashboardView,
+  "#/dashboard": DashboardView,
   // '#/products'    : ProductView,
   // '#/categories'  : CategoryView,
   // '#/suppliers'   : SupplierView,
   // '#/orders'      : OrderView,
   "#/adjustments": StockAdjustView,
-  // '#/reports'     : ReportsView,
+  "#/reports": ReportsView,
   // '#/log'         : ActivityLogView,
 };
 
@@ -162,7 +162,7 @@ initSidebarToggle(); // mobile hamburger
 initStorage(); // seed localStorage
 updateLowStockBadge(); // badge on products link
 
-const router = new Router(routes, StockAdjustView);
+const router = new Router(routes, DashboardView);
 router.init(); // attaches hashchange + load listeners
 
 // If user lands on index.html with no hash, send to dashboard
