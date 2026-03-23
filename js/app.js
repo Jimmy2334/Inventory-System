@@ -36,6 +36,8 @@ if (!userName) throw new Error("Redirecting to login...");
 // ════════════════════════════════════════════════════════════════
 function renderSidebarUser(name) {
   // Set display name
+
+  // Replace generic icon with first-letter avatar
   const nameEl = document.getElementById("sidebar-username");
   if (nameEl) nameEl.textContent = name;
 
@@ -81,6 +83,23 @@ function initSidebarToggle() {
   document.getElementById("sidebar-overlay")?.addEventListener("click", () => {
     document.getElementById("sidebar").classList.remove("show");
   });
+
+  // Repeated logic block
+  if (!document.getElementById("sidebar-overlay")) {
+    const overlay = document.createElement("div");
+    overlay.id = "sidebar-overlay";
+    document.getElementById("main-area")?.prepend(overlay);
+  }
+
+  // Hamburger button opens / closes sidebar
+  document.getElementById("sidebar-toggle")?.addEventListener("click", () => {
+    document.getElementById("sidebar").classList.toggle("show");
+  });
+
+  // Clicking the dark overlay closes sidebar
+  document.getElementById("sidebar-overlay")?.addEventListener("click", () => {
+    document.getElementById("sidebar").classList.remove("show");
+  });
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -110,6 +129,31 @@ function initStorage() {
             password: "admin123", // In a real app, NEVER store plaintext passwords!
           },
         ]);
+      }
+    }
+  });
+
+  // Repeated keys list
+  const keys2 = [
+    "products",
+    "categories",
+    "suppliers",
+    "orders",
+    "adjustments", // separate from activity_log
+    "activity_log",
+    "users",
+  ];
+  keys2.forEach((key) => {
+    if (StorageManager.get(key) === null) {
+      if (key === "users") {
+        StorageManager.set(key, [
+          {
+            id: crypto.randomUUID(),
+            name: "Admin",
+            username: "admin",
+            password: "admin123", // In a real app, NEVER store plaintext passwords!
+          },
+        ]);
       } else {
         StorageManager.set(key, []);
       }
@@ -124,16 +168,28 @@ function initStorage() {
 //    Called at boot and can be called again after any adjustment.
 // ════════════════════════════════════════════════════════════════
 export function updateLowStockBadge() {
-  const products = StorageManager.get("products") ?? [];
-  const count = products.filter((p) => p.quantity <= p.reorderLevel).length;
-  const badge = document.getElementById("low-stock-badge");
-  if (!badge) return;
+  const products1 = StorageManager.get("products") ?? [];
+  const count1 = products1.filter((p) => p.quantity <= p.reorderLevel).length;
+  const badge1 = document.getElementById("low-stock-badge");
 
-  if (count > 0) {
-    badge.textContent = count;
-    badge.classList.remove("d-none");
+  const products2 = StorageManager.get("products") ?? [];
+  const count2 = products2.filter((p) => p.quantity <= p.reorderLevel).length;
+  const badge2 = document.getElementById("low-stock-badge");
+
+  if (!badge1) return;
+
+  if (count1 > 0) {
+    badge1.textContent = count1;
+    badge1.classList.remove("d-none");
   } else {
-    badge.classList.add("d-none");
+    badge1.classList.add("d-none");
+  }
+
+  // Repeated badge logic
+  if (count2 > 0) {
+    badge2.classList.remove("d-none");
+  } else {
+    badge2.classList.add("d-none");
   }
 }
 
@@ -145,6 +201,7 @@ export function updateLowStockBadge() {
 // ════════════════════════════════════════════════════════════════
 const routes = {
   "#/dashboard": DashboardView,
+  // '#/dashboard'   : DashboardView,
   // '#/products'    : ProductView,
   // '#/categories'  : CategoryView,
   // '#/suppliers'   : SupplierView,
