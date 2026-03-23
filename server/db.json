@@ -1,0 +1,266 @@
+{
+  "categories": [
+    { "id": "cat-001", "name": "Computers & Laptops" },
+    { "id": "cat-002", "name": "Monitors & Displays" },
+    { "id": "cat-003", "name": "Keyboards & Mice" },
+    { "id": "cat-004", "name": "Cables & Adapters" },
+    { "id": "cat-005", "name": "Audio & Headsets" },
+    { "id": "cat-006", "name": "Networking" },
+    { "id": "cat-007", "name": "Storage Devices" },
+    { "id": "cat-008", "name": "Power & Charging" }
+  ],
+
+  "suppliers": [
+    {
+      "id": "sup-001",
+      "name": "TechWorld Ltd",
+      "contact": "Ahmed Hassan",
+      "phone": "+20 100 123 4567",
+      "email": "ahmed@techworld.eg"
+    },
+    {
+      "id": "sup-002",
+      "name": "Global Electronics Co.",
+      "contact": "Sara Mahmoud",
+      "phone": "+20 111 987 6543",
+      "email": "sara@globalelec.com"
+    },
+    {
+      "id": "sup-003",
+      "name": "Cairo Tech Supplies",
+      "contact": "Omar Khaled",
+      "phone": "+20 122 456 7890",
+      "email": "omar@cairotech.eg"
+    },
+    {
+      "id": "sup-004",
+      "name": "DigiImport MENA",
+      "contact": "Nour Adel",
+      "phone": "+20 100 321 0987",
+      "email": "nour@digiimport.com"
+    }
+  ],
+
+  "products": [
+    {
+      "id": "prod-001",
+      "name": "Laptop Stand Aluminium",
+      "sku": "LS-001",
+      "categoryId": "cat-001",
+      "supplierId": "sup-001",
+      "price": 45.99,
+      "quantity": 25,
+      "reorderLevel": 10
+    },
+    {
+      "id": "prod-002",
+      "name": "Monitor 24\" Full HD",
+      "sku": "MN-002",
+      "categoryId": "cat-002",
+      "supplierId": "sup-002",
+      "price": 189.99,
+      "quantity": 12,
+      "reorderLevel": 5
+    },
+    {
+      "id": "prod-003",
+      "name": "Mechanical Keyboard TKL",
+      "sku": "KB-003",
+      "categoryId": "cat-003",
+      "supplierId": "sup-001",
+      "price": 79.99,
+      "quantity": 18,
+      "reorderLevel": 8
+    },
+    {
+      "id": "prod-004",
+      "name": "Wireless Mouse Ergonomic",
+      "sku": "MS-004",
+      "categoryId": "cat-003",
+      "supplierId": "sup-003",
+      "price": 34.99,
+      "quantity": 3,
+      "reorderLevel": 10
+    },
+    {
+      "id": "prod-005",
+      "name": "HDMI Cable 2m",
+      "sku": "CB-005",
+      "categoryId": "cat-004",
+      "supplierId": "sup-004",
+      "price": 9.99,
+      "quantity": 60,
+      "reorderLevel": 20
+    },
+    {
+      "id": "prod-006",
+      "name": "USB-C Hub 7-in-1",
+      "sku": "USB-006",
+      "categoryId": "cat-004",
+      "supplierId": "sup-002",
+      "price": 39.99,
+      "quantity": 2,
+      "reorderLevel": 8
+    },
+    {
+      "id": "prod-007",
+      "name": "Noise Cancelling Headset",
+      "sku": "HS-007",
+      "categoryId": "cat-005",
+      "supplierId": "sup-001",
+      "price": 129.99,
+      "quantity": 9,
+      "reorderLevel": 5
+    },
+    {
+      "id": "prod-008",
+      "name": "WiFi Router AC1200",
+      "sku": "NET-008",
+      "categoryId": "cat-006",
+      "supplierId": "sup-003",
+      "price": 54.99,
+      "quantity": 14,
+      "reorderLevel": 5
+    },
+    {
+      "id": "prod-009",
+      "name": "SSD External 1TB",
+      "sku": "SSD-009",
+      "categoryId": "cat-007",
+      "supplierId": "sup-004",
+      "price": 89.99,
+      "quantity": 4,
+      "reorderLevel": 6
+    },
+    {
+      "id": "prod-010",
+      "name": "USB-C 65W Charger",
+      "sku": "CHG-010",
+      "categoryId": "cat-008",
+      "supplierId": "sup-002",
+      "price": 24.99,
+      "quantity": 33,
+      "reorderLevel": 15
+    },
+    {
+      "id": "prod-011",
+      "name": "Webcam 1080p Autofocus",
+      "sku": "CAM-011",
+      "categoryId": "cat-001",
+      "supplierId": "sup-001",
+      "price": 69.99,
+      "quantity": 7,
+      "reorderLevel": 5
+    },
+    {
+      "id": "prod-012",
+      "name": "Desk Pad XL",
+      "sku": "DP-012",
+      "categoryId": "cat-003",
+      "supplierId": "sup-003",
+      "price": 19.99,
+      "quantity": 40,
+      "reorderLevel": 10
+    }
+  ],
+
+  "orders": [
+    {
+      "id": "ord-001",
+      "supplierId": "sup-001",
+      "productId": "prod-004",
+      "quantity": 20,
+      "orderDate": "2026-03-01",
+      "status": "received",
+      "receivedDate": "2026-03-07"
+    },
+    {
+      "id": "ord-002",
+      "supplierId": "sup-002",
+      "productId": "prod-006",
+      "quantity": 15,
+      "orderDate": "2026-03-10",
+      "status": "pending",
+      "receivedDate": null
+    },
+    {
+      "id": "ord-003",
+      "supplierId": "sup-004",
+      "productId": "prod-009",
+      "quantity": 10,
+      "orderDate": "2026-03-12",
+      "status": "pending",
+      "receivedDate": null
+    },
+    {
+      "id": "ord-004",
+      "supplierId": "sup-003",
+      "productId": "prod-008",
+      "quantity": 8,
+      "orderDate": "2026-02-20",
+      "status": "received",
+      "receivedDate": "2026-02-27"
+    }
+  ],
+
+  "adjustments": [
+    {
+      "id": "adj-001",
+      "productId": "prod-005",
+      "productName": "HDMI Cable 2m",
+      "productSku": "CB-005",
+      "type": "decrease",
+      "quantity": 5,
+      "reason": "Damaged in warehouse",
+      "date": "2026-03-13T10:22:00.000Z"
+    },
+    {
+      "id": "adj-002",
+      "productId": "prod-002",
+      "productName": "Monitor 24\" Full HD",
+      "productSku": "MN-002",
+      "type": "increase",
+      "quantity": 3,
+      "reason": "Stocktake correction",
+      "date": "2026-03-13T11:05:00.000Z"
+    },
+    {
+      "id": "adj-003",
+      "productId": "prod-004",
+      "productName": "Wireless Mouse Ergonomic",
+      "productSku": "MS-004",
+      "type": "decrease",
+      "quantity": 2,
+      "reason": "Returned — faulty unit",
+      "date": "2026-03-12T09:40:00.000Z"
+    }
+  ],
+
+  "activity_log": [
+    {
+      "id": "log-001",
+      "message": "Stock adjusted: \"Wireless Mouse Ergonomic\" -2 (Returned — faulty unit). New qty: 3",
+      "timestamp": "2026-03-12T09:40:00.000Z"
+    },
+    {
+      "id": "log-002",
+      "message": "Stock adjusted: \"Monitor 24\\\" Full HD\" +3 (Stocktake correction). New qty: 12",
+      "timestamp": "2026-03-13T11:05:00.000Z"
+    },
+    {
+      "id": "log-003",
+      "message": "Stock adjusted: \"HDMI Cable 2m\" -5 (Damaged in warehouse). New qty: 60",
+      "timestamp": "2026-03-13T10:22:00.000Z"
+    },
+    {
+      "id": "log-004",
+      "message": "Purchase order ord-004 marked as received — WiFi Router AC1200 +8 units",
+      "timestamp": "2026-02-27T14:30:00.000Z"
+    },
+    {
+      "id": "log-005",
+      "message": "New supplier added: DigiImport MENA",
+      "timestamp": "2026-02-15T08:00:00.000Z"
+    }
+  ]
+}
