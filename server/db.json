@@ -291,5 +291,17 @@
       "message": "sifyv: Deleted product: Rhona Ferguson",
       "timestamp": "2026-03-23T22:50:42.865Z"
     }
+  ],
+  "users": [
+    {
+      "id": "user-001",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "user-002",
+      "username": "manager",
+      "password": "manager123"
+    }
   ]
 }

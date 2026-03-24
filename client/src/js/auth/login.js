@@ -14,7 +14,7 @@ document.getElementById("user_name").addEventListener("keydown", (e) => {
   if (e.key === "Enter") handleLogin();
 });
 
-function handleLogin() {
+async function handleLogin() {
   const input = document.getElementById("user_name");
   const passwordInput = document.getElementById("password");
   const errorEl = document.getElementById("login-error");
@@ -30,18 +30,15 @@ function handleLogin() {
     input.focus();
     return;
   }
-  let users = StorageManager.get("users") || [];
+  let users = await StorageManager.getAll("users") || [];
+  console.log(users)
   // Check if user exists, if not create a new one
-  let user = users.find((u) => u.username === name);
+  let user = users.find((u) => u.username === name && u.password === passwordInput.value);
   if (!user) {
-    user = {
-      id: crypto.randomUUID(),
-      name: name,
-      username: name,
-      password: passwordInput.value || "admin123", // In a real app, NEVER store plaintext passwords!
-    };
-    users.push(user);
-    StorageManager.set("users", users);
+    errorEl.textContent = "Invalid username or password.";
+    errorEl.style.display = "block";
+    passwordInput.focus();
+    return;
   }
   sessionStorage.setItem("user_name", name);
   window.location.href = "index.html";
