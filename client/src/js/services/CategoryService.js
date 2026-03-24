@@ -25,72 +25,74 @@ export class CategoryService {
     if (duplicateCategory) {
       throw new Error("Duplicate Category");
     }
-
-    //create category object
-    const newCategory = {
-      id: crypto.randomUUID(),
-      name: categoryName.trim(),
-    };
+    //add id to category
+    const category = {};
+    category.name = categoryName.trim();
+    category.id = crypto.randomUUID();
+    //push category
+    categories.push(category);
 
     //add to storage
-    await StorageManager.create("categories", newCategory);
+    await StorageManager.create("categories", category);
 
     //save the activity
     await ActivityLogService.log(`Added category: ${categoryName}`);
   }
 
   /**************delete category methoud***********/
-  async delete(categoryName) {
+  async delete(categoryId) {
     const categories = await this.getAll();
-    const categoryObj = categories.find(
-      (c) => c.name.toUpperCase() === categoryName.toUpperCase(),
-    );
-
-    if (!categoryObj) throw new Error("Category not found");
+    //get the category i want to delete
+    const deletedCategory = categories.find((c) => c.id === categoryId);
+    if (!deletedCategory) throw new Error("Category not found");
 
     //check if this category is in use or not
-    const products = await StorageManager.getWhere("products", {
-      category: categoryObj.name,
-    });
+    const products = await StorageManager.getAll("products");
 
-    if (products.length > 0)
+    const categoryInUse = products.find((p) => p.categoryId === categoryId);
+    if (categoryInUse)
       throw new Error(
-        `Cannot delete "${categoryName}" it is used by existing products`,
+        `Cannot delete "${deletedCategory.name}" it is used by existing products`,
       );
+    //delete category from array
+    const updatedCategories = categories.filter((c) => c.id !== categoryId);
+    //update the local storage
 
     //delete category
-    await StorageManager.delete("categories", categoryObj.id);
-
-    //save the activity
-    await ActivityLogService.log(`Deleted category: ${categoryName}`);
+    await StorageManager.delete("categories", categoryId);
+    await ActivityLogService.log(`Deleted category: ${deletedCategory.name}`);
   }
 
   /**************edit category methoud***********/
-  async edit(oldName, newName) {
+  async edit(categoryId, newName) {
     const categories = await this.getAll();
-    const categoryObj = categories.find(
-      (c) => c.name.toUpperCase() === oldName.toUpperCase(),
-    );
+    //get the category i want to edit
 
-    if (!categoryObj) throw new Error("Category not found");
+    const editedCategory = categories.find((c) => c.id === categoryId);
 
+    if (!editedCategory) throw new Error("Category not found");
     //check if the update category name exist
     const duplicate = categories.find(
       (c) => c.name.toUpperCase() === newName.toUpperCase(),
     );
     if (duplicate) throw new Error("Category already exists");
+    //edit product from array
+    const updatedCategories = categories.map((c) => {
+      return c.id === categoryId ? { ...c, name: newName } : c;
+    });
+    //update the local storage
 
     //patch category name
-    await StorageManager.patch("categories", categoryObj.id, { name: newName });
+    await StorageManager.patch("categories", categoryId, { name: newName });
 
     //save the activity
     await ActivityLogService.log(
-      `Edited category from ${oldName} to ${newName}`,
+      `Edited category from ${editedCategory.name} to ${newName}`,
     );
 
     /***********************Update products that have old category name ******************** */
     const productsToUpdate = await StorageManager.getWhere("products", {
-      category: categoryObj.name,
+      category: editedCategory.name,
     });
 
     const updates = productsToUpdate.map((p) =>
@@ -101,7 +103,7 @@ export class CategoryService {
     //save the activity
     if (productsToUpdate.length > 0) {
       await ActivityLogService.log(
-        `Updated products category name from ${oldName} to ${newName}`,
+        `Updated products category name from ${editedCategory.name} to ${newName}`,
       );
     }
   }

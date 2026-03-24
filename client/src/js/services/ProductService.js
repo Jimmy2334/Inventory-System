@@ -4,23 +4,22 @@ import { ActivityLogService } from "../services/ActivityLogService.js";
 export class ProductService {
   /************** getAll methoud***********/
   async getAll() {
-    let productsWithIds = await StorageManager.getAll("products");
-    productsWithIds = productsWithIds.map(async (product) => {
-      product.category = await StorageManager.getById("categories", product.categoryId);
-      product.supplier = await StorageManager.getById("suppliers", product.supplierId);
-      return product;
-    });
+    const [products, categories, suppliers] = await Promise.all([
+      StorageManager.getAll("products"),
+      StorageManager.getAll("categories"),
+      StorageManager.getAll("suppliers"),
+    ]);
 
-    let products = await Promise.all(productsWithIds);
-    products = await Promise.all(products.map(async (product) => { 
+    return products.map((product) => {
+      const category = categories.find((c) => c.id === product.categoryId);
+      const supplier = suppliers.find((s) => s.id === product.supplierId);
+
       return {
         ...product,
-        category:  product.category ? product.category.name : null,
-        supplier:  product.supplier ? product.supplier.name : null,
+        category: category?.name || null,
+        supplier: supplier?.name || null,
       };
-    }));
-
-    return products;
+    });
   }
 
   /**************add product methoud***********/

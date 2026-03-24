@@ -1,12 +1,18 @@
 import { ProductService } from "../services/ProductService.js";
 import { CategoryService } from "../services/CategoryService.js";
+import { SupplierService } from "../services/SupplierService.js";
 
 export class ProductView {
   constructor() {
     this.productService = new ProductService();
     this.categoryService = new CategoryService();
+    this.supplierService = new SupplierService();
   }
   template(products, categories) {
+    console.log("categories", categories);
+    /******For test only  */
+
+    /******************** */
     document.getElementById("page-title").innerText = "Products";
     return `
     
@@ -25,7 +31,7 @@ export class ProductView {
             (
               c,
             ) => `     <span class="badge bg-secondary me-2 mb-2 py-2 px-3 category-badge" style="font-size: 13px">
-                        <span class="btn-edit-category" data-category="${c.name}" 
+                        <span class="btn-edit-category" data-id="${c.id}" data-category="${c.name}" 
                             style="cursor:pointer;" title="Click to edit">
                             ${c.name}
                         </span>
@@ -33,6 +39,7 @@ export class ProductView {
                             class="btn-close btn-close-white ms-2 btn-delete-category"
                             style="font-size: 9px"
                             data-category="${c.name}"
+                            data-id="${c.id}"
                             title="Delete">
                         </button>
                     </span>
@@ -120,14 +127,15 @@ export class ProductView {
               <label class="form-label">Category <span class="text-danger">*</span></label>
               <select id="product-category" class="form-select" required>
                 <option value="">-- Select category --</option>
-                ${categories.map((c) => `<option value="${c.name}">${c.name}</option>`).join("")}
+                ${categories.map((c) => `<option value="${c.id}">${c.name}</option>`).join("")}
               </select>
             </div>
-            <!--  /****************add required*************/  -->
+            <!--  /****************for supplier add exact the line above of map required*************/  -->
             <div class="col-md-6">
               <label class="form-label">Supplier</label>
               <select id="product-supplier" class="form-select" >
                 <option value="">-- Select supplier --</option>
+ 
               </select>
             </div>
             <div class="col-md-4">
@@ -240,6 +248,7 @@ export class ProductView {
       btn.addEventListener("click", async (e) => {
         const error = document.getElementById("category-error");
         const category = e.currentTarget.dataset.category;
+        const categoryId = e.currentTarget.dataset.id;
         e.currentTarget.blur();
         if (
           !confirm(`Are you sure you want to delete "${category}" category?`)
@@ -248,7 +257,7 @@ export class ProductView {
         }
 
         try {
-          await this.categoryService.delete(category);
+          await this.categoryService.delete(categoryId);
           //hide error div
           error.classList.add("d-none");
           await this.render(this.container);
@@ -262,6 +271,7 @@ export class ProductView {
     document.querySelectorAll(".btn-edit-category").forEach((categoryName) => {
       categoryName.addEventListener("click", (e) => {
         const oldCategory = e.currentTarget.dataset.category;
+        const categoryId = e.currentTarget.dataset.id;
         //replace category name with input
         const badge = e.currentTarget.closest(".category-badge");
         badge.innerHTML = `<input type="text" 
@@ -287,7 +297,7 @@ export class ProductView {
               if (!newCategory) {
                 throw new Error("Category is empty");
               }
-              await this.categoryService.edit(oldCategory, newCategory);
+              await this.categoryService.edit(categoryId, newCategory);
               //hide error div
               error.classList.add("d-none");
               await this.render(this.container);
@@ -305,45 +315,47 @@ export class ProductView {
       });
     });
     // Add  , edit submit product event
-    document.getElementById("productForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const error = document.getElementById("productFormError");
-      const form = document.getElementById("productForm");
+    document
+      .getElementById("productForm")
+      .addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const error = document.getElementById("productFormError");
+        const form = document.getElementById("productForm");
 
-      try {
-        const product = {
-          name: document.getElementById("product-name").value.trim(),
-          sku: document.getElementById("product-sku").value.trim(),
-          category: document.getElementById("product-category").value,
-          supplier: document.getElementById("product-supplier").value,
-          price: parseFloat(document.getElementById("product-price").value),
-          quantity: parseInt(document.getElementById("product-qty").value),
-          reorder: parseInt(document.getElementById("product-reorder").value),
-        };
+        try {
+          const product = {
+            name: document.getElementById("product-name").value.trim(),
+            sku: document.getElementById("product-sku").value.trim(),
+            categoryId: document.getElementById("product-category").value,
+            supplierId: document.getElementById("product-supplier").value,
+            price: parseFloat(document.getElementById("product-price").value),
+            quantity: parseInt(document.getElementById("product-qty").value),
+            reorder: parseInt(document.getElementById("product-reorder").value),
+          };
 
-        const editProductId = form.dataset.editProductId;
+          const editProductId = form.dataset.editProductId;
 
-        if (editProductId) {
-          //  edit mode
-          await this.productService.edit(editProductId, product);
-          delete form.dataset.editProductId; // clear after edit
-          document.getElementById("productModalLabel").textContent =
-            "Add product"; // reset title to add product
-        } else {
-          //add mode
-          await this.productService.add(product);
+          if (editProductId) {
+            //  edit mode
+            await this.productService.edit(editProductId, product);
+            delete form.dataset.editProductId; // clear after edit
+            document.getElementById("productModalLabel").textContent =
+              "Add product"; // reset title to add product
+          } else {
+            //add mode
+            await this.productService.add(product);
+          }
+
+          bootstrap.Modal.getInstance(
+            document.getElementById("productModal"),
+          ).hide();
+          error.classList.add("d-none");
+          await this.render(this.container);
+        } catch (err) {
+          error.textContent = err.message;
+          error.classList.remove("d-none");
         }
-
-        bootstrap.Modal.getInstance(
-          document.getElementById("productModal"),
-        ).hide();
-        error.classList.add("d-none");
-        await this.render(this.container);
-      } catch (err) {
-        error.textContent = err.message;
-        error.classList.remove("d-none");
-      }
-    });
+      });
 
     //Delete product event
     document.querySelectorAll(".btn-delete-product").forEach((btn) => {
@@ -365,12 +377,12 @@ export class ProductView {
       btn.addEventListener("click", (e) => {
         const id = e.currentTarget.dataset.id;
         const products = this.products || [];
-        console.log(products)
         const editProduct = products.find((p) => p.id === id);
         if (!editProduct) {
           //   throw new Error("Product id not found");
           return;
         }
+
         // store edit product id on the form
         document.getElementById("productForm").dataset.editProductId =
           editProduct.id;
@@ -382,6 +394,7 @@ export class ProductView {
         document.getElementById("product-sku").value = editProduct.sku;
         document.getElementById("product-category").value =
           editProduct.categoryId;
+
         document.getElementById("product-supplier").value =
           editProduct.supplierId;
         document.getElementById("product-price").value = editProduct.price;
@@ -427,11 +440,13 @@ export class ProductView {
       const [products, categories] = await Promise.all([
         this.productService.getAll(),
         this.categoryService.getAll(),
+        //  this.supplierService.getAll(),
       ]);
       this.products = products; // Cache for search
       this.categories = categories;
+      //this.suppliers = this.suppliers;
 
-      container.innerHTML = this.template(products, categories);
+      container.innerHTML = this.template(products, categories); // add suppliers
       this.attachEvents();
     } catch (err) {
       console.error(err);
