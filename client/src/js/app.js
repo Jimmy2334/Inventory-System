@@ -7,14 +7,14 @@ import { Router } from "./router.js";
 import { updateLowStockBadge } from "./utils/helpers.js";
 
 // ── View imports ─────────────────────────────────────────────────
-// import { DashboardView }      from './views/DashboardView.js';
+import { DashboardView } from "./views/DashboardView.js";
 import { ProductView } from "./views/ProductView.js";
 // import { CategoryView }       from './views/CategoryView.js';
-import { SupplierView }       from './views/SupplierView.js';
+import { SupplierView } from "./views/SupplierView.js";
 // import { OrderView }          from './views/OrderView.js';
 import { StockAdjustView } from "./views/StockAdjustView.js";
-// import { ReportsView }        from './views/ReportsView.js';
-import { ActivityLogView }    from './views/ActivityLogView.js';
+import { ReportsView } from "./views/ReportsView.js";
+import { ActivityLogView } from "./views/ActivityLogView.js";
 
 // ════════════════════════════════════════════════════════════════
 // 1. AUTH GUARD
@@ -100,14 +100,13 @@ updateLowStockBadge();
 //    and the href="#/..." on each nav link.
 // ════════════════════════════════════════════════════════════════
 const routes = {
-  // '#/dashboard'   : DashboardView,
-  '#/products'    : ProductView,
-  // '#/categories'  : CategoryView,
-  '#/suppliers'   : SupplierView,
+  "#/dashboard": DashboardView,
+  "#/products": ProductView,
+  "#/suppliers": SupplierView,
   // '#/orders'      : OrderView,
   "#/adjustments": StockAdjustView,
-  // '#/reports'     : ReportsView,
-  '#/log'         : ActivityLogView,
+  "#/reports": ReportsView,
+  "#/log": ActivityLogView,
 };
 
 // ════════════════════════════════════════════════════════════════
@@ -117,7 +116,7 @@ renderSidebarUser(userName); // name in sidebar before first render
 initSidebarToggle(); // mobile hamburger
 updateLowStockBadge(); // badge on products link
 
-const router = new Router(routes, StockAdjustView);
+const router = new Router(routes, DashboardView);
 router.init(); // attaches hashchange + load listeners
 
 // If user lands on index.html with no hash, send to dashboard
