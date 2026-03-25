@@ -71,7 +71,7 @@
       "categoryId": "cat-001",
       "supplierId": "sup-001",
       "price": 45.99,
-      "quantity": 30,
+      "quantity": 10,
       "reorder": 10,
       "category": "Computers & Laptops"
     },
@@ -282,6 +282,15 @@
       "quantity": 30,
       "reason": "sdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsdsd",
       "date": "2026-03-25T19:25:52.806Z"
+    },
+    {
+      "id": "bfe06602-fadd-49af-8dad-c69a9f3e65a6",
+      "productId": "prod-001",
+      "productName": "Laptop Stand Aluminium",
+      "type": "decrease",
+      "quantity": 20,
+      "reason": "شسيسيشسي",
+      "date": "2026-03-25T20:48:33.498Z"
     }
   ],
   "activity_log": [
@@ -374,6 +383,12 @@
       "message": "admin: Deleted category: dsdfsdfsdf",
       "timestamp": "2026-03-25T19:59:28.730Z",
       "action": "category deleted"
+    },
+    {
+      "id": "f481da05-7b33-4e2f-97f8-a9d49c468849",
+      "message": "admin: Adjusted stock for product Laptop Stand Aluminium: decrease 20. Reason: شسيسيشسي",
+      "timestamp": "2026-03-25T20:48:33.563Z",
+      "action": "stock adjustment"
     }
   ],
   "users": [
