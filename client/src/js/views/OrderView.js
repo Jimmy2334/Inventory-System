@@ -1,5 +1,5 @@
-import { OrderService }    from '../services/OrderService.js';
-import { StorageManager }  from '../utils/StorageManager.js';
+import { OrderService }   from '../services/OrderService.js';
+import { StorageManager } from '../utils/StorageManager.js';
 
 export class OrderView {
 
@@ -202,9 +202,14 @@ export class OrderView {
       </tr>
     `;
 
-    let orders;
+    let orders, suppliers, products;
     try {
-      orders = await OrderService.getAll();
+      // Fetch all three at the same time
+      [orders, suppliers, products] = await Promise.all([
+        OrderService.getAll(),
+        StorageManager.getAll('suppliers'),
+        StorageManager.getAll('products'),
+      ]);
     } catch {
       tbody.innerHTML = `
         <tr>
@@ -217,6 +222,13 @@ export class OrderView {
       return;
     }
 
+    // Build lookup maps so we can resolve names by id instantly
+    const supplierMap = {};
+    suppliers.forEach(s => supplierMap[s.id] = s.name);
+
+    const productMap = {};
+    products.forEach(p => productMap[p.id] = p);
+
     // Sort newest first
     orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -225,13 +237,17 @@ export class OrderView {
       orders = orders.filter(o => o.status === filter);
     }
 
-    // Search filter across supplier / product
+    // Search filter — runs against resolved names not raw ids
     if (search) {
-      orders = orders.filter(o =>
-        o.supplierName.toLowerCase().includes(search) ||
-        o.productName.toLowerCase().includes(search)  ||
-        o.id.toLowerCase().includes(search)
-      );
+      orders = orders.filter(o => {
+        const supplierName = supplierMap[o.supplierId] ?? '';
+        const productName  = (productMap[o.productId])?.name ?? '';
+        return (
+          supplierName.toLowerCase().includes(search) ||
+          productName.toLowerCase().includes(search)  ||
+          o.id.toLowerCase().includes(search)
+        );
+      });
     }
 
     if (orders.length === 0) {
@@ -242,24 +258,32 @@ export class OrderView {
 
     empty?.classList.add('d-none');
 
-    tbody.innerHTML = orders.map(o => `
-      <tr>
-        <td>
-          <span class="badge bg-light text-dark border" style="font-family:monospace;">
-            ${this._esc(o.id.slice(0, 8))}
-          </span>
-        </td>
-        <td>${this._esc(o.supplierName)}</td>
-        <td>
-          <div>${this._esc(o.productName)}</div>
-          <div class="text-muted" style="font-size:11px;">${this._esc(o.productSku ?? '')}</div>
-        </td>
-        <td class="text-center">${o.quantity}</td>
-        <td>${this._formatDate(o.orderDate)}</td>
-        <td>${this._statusBadge(o.status)}</td>
-        <td>${this._actionButtons(o)}</td>
-      </tr>
-    `).join('');
+    tbody.innerHTML = orders.map(o => {
+      // Resolve names from the maps using the stored ids
+      const supplierName = supplierMap[o.supplierId] ?? '—';
+      const product      = productMap[o.productId];
+      const productName  = product?.name ?? '—';
+      const productSku   = product?.sku  ?? '';
+
+      return `
+        <tr>
+          <td>
+            <span class="badge bg-light text-dark border" style="font-family:monospace;">
+              ${this._esc(o.id.slice(0, 8))}
+            </span>
+          </td>
+          <td>${this._esc(supplierName)}</td>
+          <td>
+            <div>${this._esc(productName)}</div>
+            <div class="text-muted" style="font-size:11px;">${this._esc(productSku)}</div>
+          </td>
+          <td class="text-center">${o.quantity}</td>
+          <td>${this._formatDate(o.orderDate)}</td>
+          <td>${this._statusBadge(o.status)}</td>
+          <td>${this._actionButtons(o)}</td>
+        </tr>
+      `;
+    }).join('');
 
     this._bindTableActions();
   }
@@ -276,7 +300,7 @@ export class OrderView {
   }
 
   _actionButtons(order) {
-    if (order.status === 'Pending') {
+    if (order.status === 'Pending' || order.status === 'pending') {
       return `
         <button class="btn btn-sm btn-success me-1"
                 data-action="receive" data-id="${order.id}">
@@ -288,7 +312,7 @@ export class OrderView {
         </button>
       `;
     }
-    if (order.status === 'Cancelled') {
+    if (order.status === 'Cancelled' || order.status === 'cancelled') {
       return `
         <button class="btn btn-sm btn-outline-danger"
                 data-action="delete" data-id="${order.id}">
@@ -296,7 +320,6 @@ export class OrderView {
         </button>
       `;
     }
-    // Received — no further actions
     return `<button class="btn btn-sm btn-outline-secondary" disabled>Received</button>`;
   }
 
@@ -349,15 +372,11 @@ export class OrderView {
     });
 
     document.querySelectorAll('[data-action="cancel"]').forEach(btn => {
-      btn.addEventListener('click', () =>
-        this._openCancelModal(btn.dataset.id)
-      );
+      btn.addEventListener('click', () => this._openCancelModal(btn.dataset.id));
     });
 
     document.querySelectorAll('[data-action="delete"]').forEach(btn => {
-      btn.addEventListener('click', () =>
-        this._openDeleteModal(btn.dataset.id)
-      );
+      btn.addEventListener('click', () => this._openDeleteModal(btn.dataset.id));
     });
   }
 
