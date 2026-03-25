@@ -30,19 +30,19 @@ function handleLogin() {
     input.focus();
     return;
   }
-  let users = StorageManager.get("users") || [];
-  // Check if user exists, if not create a new one
-  let user = users.find((u) => u.username === name);
-  if (!user) {
-    user = {
-      id: crypto.randomUUID(),
-      name: name,
-      username: name,
-      password: passwordInput.value || "admin123", // In a real app, NEVER store plaintext passwords!
-    };
-    users.push(user);
-    StorageManager.set("users", users);
-  }
+  // let users = StorageManager.get("users") || [];
+  // // Check if user exists, if not create a new one
+  // let user = users.find((u) => u.username === name);
+  // if (!user) {
+  //   user = {
+  //     id: crypto.randomUUID(),
+  //     name: name,
+  //     username: name,
+  //     password: passwordInput.value || "admin123", // In a real app, NEVER store plaintext passwords!
+  //   };
+  //   users.push(user);
+  //   StorageManager.set("users", users);
+  // }
   sessionStorage.setItem("user_name", name);
   window.location.href = "index.html";
 }
