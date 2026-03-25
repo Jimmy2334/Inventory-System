@@ -39,7 +39,6 @@ export class ReportsView {
     return `
       <div class="container-fluid p-4">
 
-        <!-- Tabs -->
         <div class="d-flex gap-2 mb-4">
           <button class="tab-btn active-tab" data-target="low-stock-panel">
             <i class="bi bi-exclamation-triangle me-1"></i> Low-stock report
@@ -49,7 +48,6 @@ export class ReportsView {
           </button>
         </div>
 
-        <!-- Low Stock Panel -->
         <div id="low-stock-panel" class="report-panel">
 
           ${
@@ -117,7 +115,6 @@ export class ReportsView {
           </div>
         </div>
 
-        <!-- Inventory Value Panel -->
         <div id="valuation-panel" class="report-panel" style="display:none;">
           <div class="report-card">
             <div class="report-card-header d-flex justify-content-between align-items-center">
@@ -254,10 +251,10 @@ export class ReportsView {
 
         /* ── Row highlights for low stock ── */
         .row-high-shortage {
-          background: #fffbeb !important;
+          background: #FEF9C3 !important;
         }
         .row-low-shortage {
-          background: #fefce8 !important;
+          background: #FEF9C3 !important;
         }
 
         /* ── SKU Badge ── */
