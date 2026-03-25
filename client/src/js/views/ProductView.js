@@ -6,9 +6,8 @@ export class ProductView {
   constructor() {
     this.productService = new ProductService();
     this.categoryService = new CategoryService();
-    this.supplierService = new SupplierService();
   }
-  template(products, categories) {
+  template(products, categories,suppliers) {
     /******For test only  */
 
     /******************** */
@@ -134,7 +133,7 @@ export class ProductView {
               <label class="form-label">Supplier</label>
               <select id="product-supplier" class="form-select" >
                 <option value="">-- Select supplier --</option>
- 
+                ${suppliers.map((s) => `<option value="${s.id}">${s.name}</option>`).join("")}
               </select>
             </div>
             <div class="col-md-4">
@@ -436,16 +435,16 @@ export class ProductView {
   async render(container) {
     this.container = container; // save it
     try {
-      const [products, categories] = await Promise.all([
+      const [products, categories,suppliers] = await Promise.all([
         this.productService.getAll(),
         this.categoryService.getAll(),
-        //  this.supplierService.getAll(),
+        SupplierService.getAll(),
       ]);
       this.products = products; // Cache for search
       this.categories = categories;
-      //this.suppliers = this.suppliers;
+      this.suppliers = suppliers;
 
-      container.innerHTML = this.template(products, categories); // add suppliers
+      container.innerHTML = this.template(products, categories,suppliers); // add suppliers
       this.attachEvents();
     } catch (err) {
       console.error(err);
