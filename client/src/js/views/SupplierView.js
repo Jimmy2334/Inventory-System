@@ -1,8 +1,3 @@
-// js/views/SupplierView.js
-// Renders the Suppliers page inside #content.
-// All SupplierService calls are async — every handler uses await.
-// Shows a loading spinner while the first fetch is in flight.
-
 import { SupplierService } from '../services/SupplierService.js';
 
 export class SupplierView {
@@ -14,13 +9,11 @@ export class SupplierView {
     this._bindSearch();
     this._bindOpenAdd();
     this._bindFormSubmit();
-    this._renderTable();    // async — starts immediately, shows spinner
+    this._renderTable();
   }
 
+  // ******************** HTML SKELETON ********************
 
-  // ══════════════════════════════════════════════════════════════════
-  // HTML SKELETON
-  // ══════════════════════════════════════════════════════════════════
   _html() {
     return `
       <div class="card">
@@ -54,8 +47,7 @@ export class SupplierView {
                 </tr>
               </thead>
               <tbody id="suppliers-tbody">
-                <!-- spinner shown on first load -->
-                <tr id="suppliers-loading">
+                <tr>
                   <td colspan="6" class="text-center py-4">
                     <div class="spinner-border spinner-border-sm text-secondary me-2"></div>
                     Loading suppliers…
@@ -74,7 +66,7 @@ export class SupplierView {
         </div>
       </div>
 
-      <!-- ── Add / Edit Modal ── -->
+      <!-- Add / Edit Modal -->
       <div class="modal fade" id="supplierModal" tabindex="-1"
            aria-labelledby="supplierModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -92,17 +84,13 @@ export class SupplierView {
                      style="font-size:13px;"></div>
 
                 <div class="mb-3">
-                  <label class="form-label">
-                    Company name <span class="text-danger">*</span>
-                  </label>
+                  <label class="form-label">Company name <span class="text-danger">*</span></label>
                   <input type="text" id="supplier-name" class="form-control"
                          placeholder="e.g. TechWorld Ltd" />
                 </div>
 
                 <div class="mb-3">
-                  <label class="form-label">
-                    Contact person <span class="text-danger">*</span>
-                  </label>
+                  <label class="form-label">Contact person <span class="text-danger">*</span></label>
                   <input type="text" id="supplier-contact" class="form-control"
                          placeholder="e.g. Ahmed Hassan" />
                 </div>
@@ -114,9 +102,7 @@ export class SupplierView {
                 </div>
 
                 <div class="mb-3">
-                  <label class="form-label">
-                    Email <span class="text-danger">*</span>
-                  </label>
+                  <label class="form-label">Email <span class="text-danger">*</span></label>
                   <input type="email" id="supplier-email" class="form-control"
                          placeholder="email@company.com" />
                 </div>
@@ -136,7 +122,7 @@ export class SupplierView {
         </div>
       </div>
 
-      <!-- ── Delete Confirmation Modal ── -->
+      <!-- Delete Confirmation Modal -->
       <div class="modal fade" id="supplierDeleteModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-sm">
           <div class="modal-content">
@@ -164,23 +150,13 @@ export class SupplierView {
     `;
   }
 
+  // ******************** TABLE RENDERING ********************
 
-  // ══════════════════════════════════════════════════════════════════
-  // TABLE RENDERING  (async)
-  // ══════════════════════════════════════════════════════════════════
-
-  /**
-   * Fetch suppliers, then paint the tbody.
-   * Called on load, after save, and after delete.
-   *
-   * @param {string} [filter=''] - lower-cased search term
-   */
   async _renderTable(filter = '') {
     const tbody = document.getElementById('suppliers-tbody');
     const empty = document.getElementById('suppliers-empty');
     if (!tbody) return;
 
-    // Show spinner while fetching
     tbody.innerHTML = `
       <tr>
         <td colspan="6" class="text-center py-4">
@@ -205,7 +181,6 @@ export class SupplierView {
       return;
     }
 
-    // Client-side filter across name / contact / email
     if (filter) {
       suppliers = suppliers.filter(s =>
         s.name.toLowerCase().includes(filter)    ||
@@ -222,7 +197,6 @@ export class SupplierView {
 
     empty?.classList.add('d-none');
 
-    // Fetch product counts in parallel — one request per supplier
     const counts = await Promise.all(
       suppliers.map(s => SupplierService.getProductCount(s.id))
     );
@@ -242,16 +216,12 @@ export class SupplierView {
         </td>
         <td>
           <button class="btn btn-sm btn-outline-primary me-1"
-                  data-action="edit"
-                  data-id="${s.id}"
-                  title="Edit">
+                  data-action="edit" data-id="${s.id}" title="Edit">
             <i class="bi bi-pencil"></i>
           </button>
           <button class="btn btn-sm btn-outline-danger"
-                  data-action="delete"
-                  data-id="${s.id}"
-                  data-name="${this._esc(s.name)}"
-                  title="Delete">
+                  data-action="delete" data-id="${s.id}"
+                  data-name="${this._esc(s.name)}" title="Delete">
             <i class="bi bi-trash"></i>
           </button>
         </td>
@@ -261,10 +231,7 @@ export class SupplierView {
     this._bindTableActions();
   }
 
-
-  // ══════════════════════════════════════════════════════════════════
-  // EVENT BINDING
-  // ══════════════════════════════════════════════════════════════════
+  // ******************** EVENT BINDING ********************
 
   _bindSearch() {
     document.getElementById('supplier-search')
@@ -305,10 +272,7 @@ export class SupplierView {
       });
   }
 
-
-  // ══════════════════════════════════════════════════════════════════
-  // MODAL HELPERS
-  // ══════════════════════════════════════════════════════════════════
+  // ******************** MODAL HELPERS ********************
 
   _openModal(supplier = null) {
     document.getElementById('supplierModalLabel').textContent =
@@ -324,19 +288,15 @@ export class SupplierView {
 
     this._hideError();
     this._setSubmitLoading(false);
-
     new bootstrap.Modal(document.getElementById('supplierModal')).show();
   }
 
   _openDeleteModal(id, name) {
     document.getElementById('supplier-delete-name').textContent = name;
 
-    const modal = new bootstrap.Modal(
-      document.getElementById('supplierDeleteModal')
-    );
+    const modal = new bootstrap.Modal(document.getElementById('supplierDeleteModal'));
     modal.show();
 
-    // Replace button to clear any stale listener
     const btn    = document.getElementById('supplier-confirm-delete');
     const newBtn = btn.cloneNode(true);
     btn.replaceWith(newBtn);
@@ -346,10 +306,7 @@ export class SupplierView {
       newBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
 
       const result = await SupplierService.delete(id);
-
-      bootstrap.Modal.getInstance(
-        document.getElementById('supplierDeleteModal')
-      ).hide();
+      bootstrap.Modal.getInstance(document.getElementById('supplierDeleteModal')).hide();
 
       if (result.ok) {
         this._renderTable(this._currentFilter());
@@ -360,10 +317,7 @@ export class SupplierView {
     });
   }
 
-
-  // ══════════════════════════════════════════════════════════════════
-  // SAVE LOGIC  (async)
-  // ══════════════════════════════════════════════════════════════════
+  // ******************** SAVE LOGIC ********************
 
   async _handleSave() {
     const id = document.getElementById('supplier-id').value.trim();
@@ -389,10 +343,7 @@ export class SupplierView {
       return;
     }
 
-    bootstrap.Modal.getInstance(
-      document.getElementById('supplierModal')
-    ).hide();
-
+    bootstrap.Modal.getInstance(document.getElementById('supplierModal')).hide();
     this._renderTable(this._currentFilter());
     this._toast(
       id ? 'Supplier updated successfully.' : 'Supplier added successfully.',
@@ -400,14 +351,10 @@ export class SupplierView {
     );
   }
 
-
-  // ══════════════════════════════════════════════════════════════════
-  // SMALL UTILITIES
-  // ══════════════════════════════════════════════════════════════════
+  // ******************** UTILITIES ********************
 
   _currentFilter() {
-    return (document.getElementById('supplier-search')?.value ?? '')
-      .trim().toLowerCase();
+    return (document.getElementById('supplier-search')?.value ?? '').trim().toLowerCase();
   }
 
   _showError(msg) {
@@ -421,20 +368,14 @@ export class SupplierView {
     document.getElementById('supplierFormError')?.classList.add('d-none');
   }
 
-  /**
-   * Disable the submit button and show a spinner while saving.
-   * @param {boolean} loading
-   */
   _setSubmitLoading(loading) {
     const btn   = document.getElementById('supplier-submit-btn');
     const label = document.getElementById('supplier-submit-label');
     if (!btn || !label) return;
 
-    btn.disabled = loading;
+    btn.disabled      = loading;
     label.textContent = loading ? 'Saving…' : (
-      document.getElementById('supplier-id').value.trim()
-        ? 'Save changes'
-        : 'Save supplier'
+      document.getElementById('supplier-id').value.trim() ? 'Save changes' : 'Save supplier'
     );
   }
 
@@ -451,8 +392,7 @@ export class SupplierView {
     }[type] ?? 'bi-info-circle-fill';
 
     container.insertAdjacentHTML('beforeend', `
-      <div id="${id}"
-           class="toast align-items-center text-bg-${type} border-0"
+      <div id="${id}" class="toast align-items-center text-bg-${type} border-0"
            role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
           <div class="toast-body">
