@@ -75,7 +75,9 @@ export class ActivityLogView {
                   <td>
                   <span class="badge ${actionClass}">${log.action[0].toUpperCase() + log.action.slice(1)}</span>
                   </td>
-                  <td>${log.message}</td>
+                  <td style="max-width: 130px;" title="${log.message}">
+                    <div class="text-truncate">${log.message}</div>
+                  </td>
             </tr>`;
       })
       .join("");

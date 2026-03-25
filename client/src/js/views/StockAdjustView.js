@@ -18,7 +18,7 @@ export class StockAdjustView {
     // Paste your HTML section here — just wrap in backticks
     container.innerHTML = `
       <div class="row g-3">
-        <div class="col-lg-5">
+        <div class="col-lg-5 col-12">
           <div class="card">
             <div class="card-header">
               <i class="bi bi-arrow-left-right me-2"></i>New stock adjustment
@@ -60,13 +60,13 @@ export class StockAdjustView {
           </div>
         </div>
 
-        <div class="col-lg-7">
+        <div class="col-lg-7 col-12">
           <div class="card">
             <div class="card-header">
               <i class="bi bi-clock-history me-2"></i>Adjustment history
             </div>
             <div class="card-body p-0">
-              <div class="table-responsive-wrapper">
+              <div class="table-responsive">
                 <table class="table mb-0">
                   <thead>
                     <tr>
@@ -98,7 +98,9 @@ export class StockAdjustView {
                             <td class="${adj.type === "increase" ? "text-success" : "text-danger"}">
                               ${adj.type === "increase" ? "+" : "-"}${adj.quantity}
                             </td>
-                            <td>${adj.reason}</td>
+                            <td style="max-width: 130px;" title="${adj.reason}">
+                              <div class="text-truncate">${adj.reason}</div>
+                            </td>
                             <td class="text-muted" style="font-size: 12px">
                               ${new Date(adj.date).toLocaleDateString()} ${new Date(adj.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                             </td>

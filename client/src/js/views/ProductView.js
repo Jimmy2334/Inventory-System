@@ -162,6 +162,24 @@ export class ProductView {
     </div>
   </div>
 </div>
+
+<!-- ── Delete Confirmation Modal ── -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body text-center p-4">
+        <div id="deleteConfirmError" class="alert alert-danger d-none mb-3" style="font-size:13px;"></div>
+        <i class="bi bi-exclamation-circle text-danger mb-3" style="font-size: 3rem;"></i>
+        <h5 class="mb-2">Confirm Delete</h5>
+        <p class="text-muted mb-4" id="deleteConfirmMessage">Are you sure you want to delete this item?</p>
+        <div class="d-flex justify-content-center gap-2">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="btn-confirm-delete">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
     `;
   }
 
@@ -183,7 +201,7 @@ export class ProductView {
           <td>${product.quantity}</td>
           <td>${product.reorder}</td>
           <td><span class="badge ${badgeClass}">${statusText}</span></td>
-          <td>
+          <td style="min-width:110px">
             <button class="btn btn-sm btn-outline-primary me-1 btn-edit"  data-bs-toggle="modal" data-bs-target="#productModal" data-id="${product.id}">
     
               <i class="bi bi-pencil"></i>
@@ -218,6 +236,37 @@ export class ProductView {
   }
   /**************************************************Events*************************************************** */
   attachEvents() {
+    let deleteTargetId = null;
+    let deleteTargetType = null;
+    const deleteModalEl = document.getElementById("deleteConfirmModal");
+    const deleteModal = deleteModalEl ? new bootstrap.Modal(deleteModalEl) : null;
+    const btnConfirmDelete = document.getElementById("btn-confirm-delete");
+    const confirmMessage = document.getElementById("deleteConfirmMessage");
+
+    if (btnConfirmDelete) {
+      btnConfirmDelete.addEventListener("click", async () => {
+        const errBox = document.getElementById("deleteConfirmError");
+        errBox.classList.add("d-none");
+        btnConfirmDelete.disabled = true;
+        
+        try {
+          if (deleteTargetType === "category") {
+            await this.categoryService.delete(deleteTargetId);
+          } else if (deleteTargetType === "product") {
+            await this.productService.delete(deleteTargetId);
+          }
+          deleteModal.hide();
+          // wait a tiny bit to avoid bootstrap backdrop stuck issue before replacing DOM
+          setTimeout(async () => {
+            await this.render(this.container);
+          }, 150);
+        } catch (err) {
+          errBox.textContent = err.message;
+          errBox.classList.remove("d-none");
+          btnConfirmDelete.disabled = false;
+        }
+      });
+    }
     // Add category event
     document
       .getElementById("btn-add-category")
@@ -243,26 +292,17 @@ export class ProductView {
 
     // Delete category event
     document.querySelectorAll(".btn-delete-category").forEach((btn) => {
-      btn.addEventListener("click", async (e) => {
-        const error = document.getElementById("category-error");
+      btn.addEventListener("click", (e) => {
+        deleteTargetType = "category";
         const category = e.currentTarget.dataset.category;
-        const categoryId = e.currentTarget.dataset.id;
+        deleteTargetId = e.currentTarget.dataset.id;
         e.currentTarget.blur();
-        if (
-          !confirm(`Are you sure you want to delete "${category}" category?`)
-        ) {
-          return;
-        }
-
-        try {
-          await this.categoryService.delete(categoryId);
-          //hide error div
-          error.classList.add("d-none");
-          await this.render(this.container);
-        } catch (err) {
-          error.textContent = err.message;
-          error.classList.remove("d-none");
-        }
+        
+        const errBox = document.getElementById("deleteConfirmError");
+        if (errBox) errBox.classList.add("d-none");
+        
+        confirmMessage.innerHTML = `Are you sure you want to delete the <strong>${category}</strong> category?`;
+        if (deleteModal) deleteModal.show();
       });
     });
     // edit category event
@@ -357,15 +397,15 @@ export class ProductView {
 
     //Delete product event
     document.querySelectorAll(".btn-delete-product").forEach((btn) => {
-      btn.addEventListener("click", async (e) => {
-        const id = e.currentTarget.dataset.id;
-        if (!confirm("Are you sure you want to delete this product?")) return;
-        try {
-          await this.productService.delete(id);
-          await this.render(this.container);
-        } catch (err) {
-          alert(err.message);
-        }
+      btn.addEventListener("click", (e) => {
+        deleteTargetType = "product";
+        deleteTargetId = e.currentTarget.dataset.id;
+        
+        const errBox = document.getElementById("deleteConfirmError");
+        if (errBox) errBox.classList.add("d-none");
+        
+        confirmMessage.innerHTML = `Are you sure you want to delete this product?`;
+        if (deleteModal) deleteModal.show();
       });
     });
 
