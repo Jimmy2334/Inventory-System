@@ -11,7 +11,7 @@ import { DashboardView } from "./views/DashboardView.js";
 import { ProductView } from "./views/ProductView.js";
 // import { CategoryView }       from './views/CategoryView.js';
 import { SupplierView } from "./views/SupplierView.js";
-// import { OrderView }          from './views/OrderView.js';
+import { OrderView }          from './views/OrderView.js';
 import { StockAdjustView } from "./views/StockAdjustView.js";
 import { ReportsView } from "./views/ReportsView.js";
 import { ActivityLogView } from "./views/ActivityLogView.js";
@@ -103,7 +103,7 @@ const routes = {
   "#/dashboard": DashboardView,
   "#/products": ProductView,
   "#/suppliers": SupplierView,
-  // '#/orders'      : OrderView,
+  '#/orders'      : OrderView,
   "#/adjustments": StockAdjustView,
   "#/reports": ReportsView,
   "#/log": ActivityLogView,
