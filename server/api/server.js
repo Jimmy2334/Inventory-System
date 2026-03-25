@@ -13,7 +13,7 @@ server.use(middlewares);
 
 // CORS for frontend
 const allowedOrigins = [
-  "https://inven-track.vercel.app",
+  "https://inventory-system-livid-three.vercel.app",
   "http://localhost:8080",
   "http://localhost:5173",
 ];
