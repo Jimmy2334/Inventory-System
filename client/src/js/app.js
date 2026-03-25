@@ -7,13 +7,13 @@ import { Router } from "./router.js";
 import { updateLowStockBadge } from "./utils/helpers.js";
 
 // ── View imports ─────────────────────────────────────────────────
-// import { DashboardView }      from './views/DashboardView.js';
+import { DashboardView } from "./views/DashboardView.js";
 import { ProductView } from "./views/ProductView.js";
 // import { CategoryView }       from './views/CategoryView.js';
 // import { SupplierView }       from './views/SupplierView.js';
 // import { OrderView }          from './views/OrderView.js';
 import { StockAdjustView } from "./views/StockAdjustView.js";
-// import { ReportsView }        from './views/ReportsView.js';
+import { ReportsView } from "./views/ReportsView.js";
 // import { ActivityLogView }    from './views/ActivityLogView.js';
 
 // ════════════════════════════════════════════════════════════════
@@ -100,13 +100,13 @@ updateLowStockBadge();
 //    and the href="#/..." on each nav link.
 // ════════════════════════════════════════════════════════════════
 const routes = {
-  // '#/dashboard'   : DashboardView,
-  '#/products'    : ProductView,
+  "#/dashboard": DashboardView,
+  "#/products": ProductView,
   // '#/categories'  : CategoryView,
   // '#/suppliers'   : SupplierView,
   // '#/orders'      : OrderView,
   "#/adjustments": StockAdjustView,
-  // '#/reports'     : ReportsView,
+  "#/reports": ReportsView,
   // '#/log'         : ActivityLogView,
 };
 
