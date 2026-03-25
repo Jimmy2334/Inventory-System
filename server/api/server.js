@@ -13,7 +13,7 @@ server.use(middlewares);
 
 // CORS for frontend
 const allowedOrigins = [
-  "https://students-affairs-system.vercel.app",
+  "https://inven-track.vercel.app",
   "http://localhost:8080",
   "http://localhost:5173",
 ];
