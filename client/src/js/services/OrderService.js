@@ -39,7 +39,6 @@ export class OrderService {
       orderDate   : data.orderDate,
       status      : 'Pending',
       receivedDate: null,
-      createdAt   : new Date().toISOString(),
     };
 
     const created = await StorageManager.create(RESOURCE, order);
