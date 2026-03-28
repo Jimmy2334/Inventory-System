@@ -1,6 +1,7 @@
 import { ProductService } from "../services/ProductService.js";
 import { CategoryService } from "../services/CategoryService.js";
 import { SupplierService } from "../services/SupplierService.js";
+import { updateLowStockBadge } from "../utils/helpers.js";
 
 export class ProductView {
   constructor() {
@@ -258,6 +259,7 @@ export class ProductView {
             await this.categoryService.delete(deleteTargetId);
           } else if (deleteTargetType === "product") {
             await this.productService.delete(deleteTargetId);
+            updateLowStockBadge();
           }
           deleteModal.hide();
           // wait a tiny bit to avoid bootstrap backdrop stuck issue before replacing DOM
@@ -394,7 +396,7 @@ export class ProductView {
             //add mode
             await this.productService.add(product);
           }
-
+          updateLowStockBadge();
           bootstrap.Modal.getInstance(
             document.getElementById("productModal"),
           ).hide();

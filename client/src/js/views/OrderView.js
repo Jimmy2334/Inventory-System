@@ -1,5 +1,6 @@
 import { OrderService }   from '../services/OrderService.js';
 import { StorageManager } from '../utils/StorageManager.js';
+import { updateLowStockBadge } from '../utils/helpers.js';
 
 export class OrderView {
 
@@ -543,6 +544,7 @@ export class OrderView {
     if (result.ok) {
       await this._refreshTable();
       this._toast('Order received — stock updated.', 'success');
+      updateLowStockBadge();
     } else {
       this._toast(result.error, 'danger');
     }
