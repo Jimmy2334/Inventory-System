@@ -1,0 +1,101 @@
+/* ============================================================
+   responsive.css  —  Member 4
+   Mobile-first responsive overrides
+   ============================================================ */
+
+/* ── Tablet (≤ 992px) ─────────────────────────────────────── */
+@media (max-width: 992px) {
+  :root { --sidebar-w: 0px; }
+
+  #sidebar {
+    transform: translateX(-230px);
+    width: 230px;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+  }
+
+  #sidebar.show {
+    transform: translateX(0);
+  }
+
+  #main-area { margin-left: 0; }
+
+  #sidebar-toggle { display: block; }
+
+  /* Overlay when sidebar is open on mobile */
+  #sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 190;
+  }
+  #sidebar.show ~ #main-area #sidebar-overlay,
+  body.sidebar-open #sidebar-overlay { display: block; }
+
+  #content { padding: 16px; }
+
+  .stat-card { padding: 14px; }
+  .stat-value { font-size: 22px; }
+}
+
+/* ── Phone (≤ 768px) ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  #content { padding: 12px; }
+
+  /* Stack stat cards 2-per-row on phones */
+  .stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* Tables scroll horizontally */
+  .table-responsive-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Modal full-width on phones */
+  .modal-dialog { margin: 8px; }
+  .modal-content { border-radius: 10px; }
+
+  /* Section header stacks */
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Report tabs wrap */
+  .report-tabs { flex-wrap: wrap; }
+  .report-tabs .nav-link { margin-bottom: 6px; }
+
+  /* Form rows stack on small screens */
+  .form-row-responsive {
+    flex-direction: column;
+  }
+
+  .topbar-search { display: none; }
+
+  #topbar #page-title { font-size: 15px; }
+}
+
+/* ── Small phone (≤ 480px) ───────────────────────────────── */
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .stat-icon { width: 38px; height: 38px; font-size: 17px; }
+  .stat-value { font-size: 20px; }
+
+  .btn { padding: 6px 10px; font-size: 12px; }
+
+  #topbar { padding: 0 14px; }
+  #content { padding: 10px; }
+
+  .card-header { padding: 12px 14px !important; }
+  .card-body   { padding: 14px !important; }
+
+  .table thead th { font-size: 10px; padding: 8px 10px; }
+  .table td       { padding: 8px 10px; }
+
+  .modal-header, .modal-body, .modal-footer { padding: 14px !important; }
+}
