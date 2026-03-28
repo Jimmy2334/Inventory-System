@@ -24,7 +24,7 @@ export class StockAdjustView {
                   <label class="form-label" for="adj-product">Product <span class="text-danger">*</span></label>
                   <select id="adj-product" class="form-select" required>
                     <option value="">Select a product...</option>
-                    ${products?.length>0?`${products.map((product) => `<option value="${product.id}">${product.name}</option>`).join("")}`:`<option value="">No products found</option>`}
+                    ${products?.length > 0 ? `${products.map((product) => `<option value="${product.id}">${product.name}</option>`).join("")}` : `<option value="">No products found</option>`}
                   </select>
                 </div>
                 <div class="row g-2 mb-3">
@@ -62,15 +62,18 @@ export class StockAdjustView {
             </div>
             <div class="card-body p-0">
               <div class="table-responsive">
-                <table class="table mb-0">
+                <table class="table table-hover mb-0">
                   <thead>
                     <tr>
-                      <th>Product</th><th>Type</th>
-                      <th>Change</th><th>Reason</th><th>Date</th>
+                      <th>Date</th><th>Product</th><th>Type</th>
+                      <th>Change</th><th>Reason</th>
                     </tr>
                   </thead>
                   <tbody id="adj-history-tbody">
-                  ${adjustments?.length>0?this.renderRows(adjustments): ` <tr><td colspan="5" class="text-center text-muted py-4">
+                  ${
+                    adjustments?.length > 0
+                      ? this.renderRows(adjustments)
+                      : ` <tr><td colspan="5" class="text-center text-muted py-4">
                       No adjustments yet.
                     </td></tr>`
                   }
@@ -80,7 +83,7 @@ export class StockAdjustView {
             </div>
           </div>
         </div>
-      </div>`
+      </div>`;
   }
 
   async render(container) {
@@ -90,7 +93,7 @@ export class StockAdjustView {
         <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
         <div class="spinner-border text-primary" role="status"></div>
       </div>    
-    `
+    `;
     this.loadData(container);
   }
   renderRows(adjustments) {
@@ -98,7 +101,10 @@ export class StockAdjustView {
       .map(
         (adj) => `
           <tr>
-            <td>
+          <td class="text-muted" style="font-size: 12px;">
+            ${new Date(adj.date).toLocaleDateString()} ${new Date(adj.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            </td>
+            <td style="white-space: nowrap;">
               <div>${adj.productName}</div>
               <div
                 class="text-muted mt-1"
@@ -115,11 +121,15 @@ export class StockAdjustView {
             <td class="${adj.type === "increase" ? "text-success" : "text-danger"}">
               ${adj.type === "increase" ? "+" : "-"}${adj.quantity}
             </td>
-            <td style="max-width: 130px;" title="${adj.reason}">
-              <div class="text-truncate">${adj.reason}</div>
-            </td>
-            <td class="text-muted" style="font-size: 12px">
-              ${new Date(adj.date).toLocaleDateString()} ${new Date(adj.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            
+            <td 
+            style="
+                -webkit-line-clamp: 5;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                max-width: 400px;"
+                title="${adj.reason}">
+              <div>${adj.reason}</div>
             </td>
           </tr>
       `,
@@ -196,14 +206,21 @@ export class StockAdjustView {
       const type = typeSelect.value;
       const amount = parseInt(amountInput.value);
       const reason = reasonInput.value.trim();
-      const product = this.products.find(p => p.id === productId);
+      const product = this.products.find((p) => p.id === productId);
       if (!productId || !type || !amount || !reason) {
         errorBox.innerText = "Please fill in all fields.";
         errorBox.classList.remove("d-none");
         return;
       }
       try {
-        await this.inventoryService.adjustStock(productId, type, amount, reason, product.name,product.sku);
+        await this.inventoryService.adjustStock(
+          productId,
+          type,
+          amount,
+          reason,
+          product.name,
+          product.sku,
+        );
         // Optionally, reset the form or show a success message
       } catch (error) {
         errorBox.innerText = error.message;

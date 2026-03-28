@@ -67,7 +67,7 @@ export class ActivityLogView {
       `;
     }
   }
-  renderRows(logs=this.logs) {
+  renderRows(logs = this.logs) {
     if (logs.length === 0) {
       return `
             <tr><td colspan="3" class="text-center text-muted py-4">
@@ -88,6 +88,8 @@ export class ActivityLogView {
           actionClass = "bg-warning text-dark";
         } else if (log.action.includes("received")) {
           actionClass = "bg-success";
+        } else {
+          actionClass = "bg-dark text-white";
         }
         return `<tr>
                   <td style="white-space: nowrap;" class="text-muted" style="font-size: 12px">
@@ -96,8 +98,15 @@ export class ActivityLogView {
                   <td>
                   <span class="badge ${actionClass}">${log.action[0].toUpperCase() + log.action.slice(1)}</span>
                   </td>
-                  <td style="max-width: 130px;" title="${log.message}">
-                    <div class="text-truncate">${log.message}</div>
+                  <td title="${log.message}">
+                    <div style="line-height: 1.45;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 6;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                        min-width: 100%;
+                        max-width:400px"
+                    >${log.message}</div>
                   </td>
             </tr>`;
       })

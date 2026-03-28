@@ -212,9 +212,9 @@ export class SupplierView {
           </a>
         </td>
         <td>
-          <span class="badge bg-info text-dark rounded-pill">${counts[i]}</span>
+          <span class="badge bg-info text-white rounded-pill">${counts[i]}</span>
         </td>
-        <td>
+        <td style="white-space: nowrap;">
           <button class="btn btn-sm btn-outline-primary me-1"
                   data-action="edit" data-id="${s.id}" title="Edit">
             <i class="bi bi-pencil"></i>

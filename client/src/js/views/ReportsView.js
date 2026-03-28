@@ -7,7 +7,7 @@ export class ReportsView {
 
   render(container) {
     const pageTitle = document.getElementById("page-title");
-    if (pageTitle) pageTitle.textContent = "Dashboard";
+    if (pageTitle) pageTitle.textContent = "Reports";
 
     container.innerHTML = `
       <div class="d-flex justify-content-center align-items-center" style="min-height: 300px;">
@@ -37,9 +37,9 @@ export class ReportsView {
 
   template(lowStock, valuation) {
     return `
-      <div class="container-fluid p-4">
+      <div class="container-fluid pt-4 px-0">
 
-        <div class="d-flex gap-2 mb-4">
+        <div class="d-flex mb-4 flex-column flex-sm-row gap-3 gap-md-2">
           <button class="tab-btn active-tab" data-target="low-stock-panel">
             <i class="bi bi-exclamation-triangle me-1"></i> Low-stock report
           </button>
@@ -143,9 +143,9 @@ export class ReportsView {
                     .map(
                       (p) => `
                     <tr>
-                      <td>${p.name}</td>
-                      <td><span class="sku-badge">${p.sku}</span></td>
-                      <td>${p.categoryName}</td>
+                      <td style="white-space: nowrap;">${p.name}</td>
+                      <td style="white-space: nowrap;"><span class="sku-badge">${p.sku}</span></td>
+                      <td style="white-space: nowrap;">${p.categoryName}</td>
                       <td>$${(p.price || 0).toFixed(2)}</td>
                       <td>${p.quantity}</td>
                       <td class="stock-value-cell">$${p.stockValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>

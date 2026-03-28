@@ -419,7 +419,7 @@
       "id": "d5e41215-58df-48e7-b8ca-0c7ebede3761",
       "message": "admin: Order received: undefined +15 units from undefined",
       "timestamp": "2026-03-25T23:51:17.951Z",
-      "action": "order_received"
+      "action": "order received"
     },
     {
       "id": "1c9f57e9-53ab-4070-a8bc-7e29657a8d3f",

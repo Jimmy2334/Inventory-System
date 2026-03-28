@@ -111,8 +111,8 @@ export class DashboardView {
                     </thead>
                     <tbody>
                       ${recentActivity
-                          .map((log) => {
-                                            let actionClass = "bg-secondary";
+                        .map((log) => {
+                          let actionClass = "bg-secondary";
                           if (log.action.includes("added")) {
                             actionClass = "bg-primary";
                           } else if (log.action.includes("deleted")) {
@@ -123,6 +123,8 @@ export class DashboardView {
                             actionClass = "bg-warning text-dark";
                           } else if (log.action.includes("received")) {
                             actionClass = "bg-success";
+                          } else {
+                            actionClass = "bg-dark text-white";
                           }
                           const timeStr = new Date(
                             log.timestamp,
@@ -134,7 +136,7 @@ export class DashboardView {
                           return `
                           <tr>
                             <td class="activity-time">${timeStr}</td>
-                            <td class="activity-action"><span class="badge ${actionClass}">${log.action[0].toUpperCase() + log.action.slice(1)}</span></td>
+                            <td class="activity-action d-flex justify-content-center justify-content-md-start"><span class="badge ${actionClass}">${log.action[0].toUpperCase() + log.action.slice(1)}</span></td>
                             <td>
                               <div class="activity-details-wrap" title="${(log.message || log.details || "").replace(/"/g, "&quot;")}">
                                 ${log.message || log.details || ""}
@@ -305,9 +307,10 @@ export class DashboardView {
           font-size: 0.82rem;
           line-height: 1.45;
           display: -webkit-box;
-          -webkit-line-clamp: 2;
+          -webkit-line-clamp: 4;
           -webkit-box-orient: vertical;
           overflow: hidden;
+
         }
 
         /* ── RESPONSIVE FIXES (small screens only) ── */
