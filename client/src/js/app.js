@@ -9,7 +9,6 @@ import { updateLowStockBadge } from "./utils/helpers.js";
 // ── View imports ─────────────────────────────────────────────────
 import { DashboardView } from "./views/DashboardView.js";
 import { ProductView } from "./views/ProductView.js";
-// import { CategoryView }       from './views/CategoryView.js';
 import { SupplierView } from "./views/SupplierView.js";
 import { OrderView }          from './views/OrderView.js';
 import { StockAdjustView } from "./views/StockAdjustView.js";
@@ -90,8 +89,6 @@ function initSidebarToggle() {
 //    Called at boot and can be called again after any adjustment.
 // ════════════════════════════════════════════════════════════════
 // See utils/helpers.js for the function definition.
-
-updateLowStockBadge();
 
 // ════════════════════════════════════════════════════════════════
 // 6. ROUTE MAP

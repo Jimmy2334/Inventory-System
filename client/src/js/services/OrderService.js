@@ -44,7 +44,7 @@ export class OrderService {
     const created = await StorageManager.create(RESOURCE, order);
 
     await ActivityLogService.log(
-      'order_add',
+      'order added',
       `New order: ${product.name} x${order.quantity} from ${supplier.name}`
     );
 
@@ -55,10 +55,10 @@ export class OrderService {
     const order = await StorageManager.getById(RESOURCE, id);
     if (!order) return { ok: false, error: 'Order not found.' };
 
-    if (order.status === 'Received') {
+    if (order.status.toLowerCase() === 'received') {
       return { ok: false, error: 'This order has already been received.' };
     }
-    if (order.status === 'Cancelled') {
+    if (order.status.toLowerCase() === 'cancelled') {
       return { ok: false, error: 'Cannot receive a cancelled order.' };
     }
 
@@ -78,7 +78,7 @@ export class OrderService {
     });
 
     await ActivityLogService.log(
-      'order_received',
+      'order received',
       `Order received: productId=${order.productId} +${order.quantity} units from supplierId=${order.supplierId}`
     );
 
@@ -89,10 +89,10 @@ export class OrderService {
     const order = await StorageManager.getById(RESOURCE, id);
     if (!order) return { ok: false, error: 'Order not found.' };
 
-    if (order.status === 'Received') {
+    if (order.status.toLowerCase() === 'received') {
       return { ok: false, error: 'Cannot cancel an order that has already been received.' };
     }
-    if (order.status === 'Cancelled') {
+    if (order.status.toLowerCase() === 'cancelled') {
       return { ok: false, error: 'Order is already cancelled.' };
     }
 
@@ -102,7 +102,7 @@ export class OrderService {
     });
 
     await ActivityLogService.log(
-      'order_cancel',
+      'order canceled',
       `Order cancelled: productId=${order.productId} from supplierId=${order.supplierId}`
     );
 
@@ -113,14 +113,14 @@ export class OrderService {
     const order = await StorageManager.getById(RESOURCE, id);
     if (!order) return { ok: false, error: 'Order not found.' };
 
-    if (order.status !== 'Cancelled') {
+    if (order.status.toLowerCase() !== 'cancelled') {
       return { ok: false, error: 'Only cancelled orders can be deleted. Cancel it first.' };
     }
 
     await StorageManager.delete(RESOURCE, id);
 
     await ActivityLogService.log(
-      'order_delete',
+      'order deleted',
       `Order deleted: productId=${order.productId} from supplierId=${order.supplierId}`
     );
 

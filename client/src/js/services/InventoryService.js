@@ -1,7 +1,7 @@
 import { StorageManager } from "../utils/StorageManager.js";
 import { ActivityLogService } from "./ActivityLogService.js";
 export class InventoryService {
-  async adjustStock(productId, type, quantity, reason, productName) {
+  async adjustStock(productId, type, quantity, reason, productName,productSku) {
     try {
       let product = await StorageManager.getById("products", productId);
       if (!product) {
@@ -11,6 +11,7 @@ export class InventoryService {
         id: crypto.randomUUID(),
         productId,
         productName: product.name,
+        productSku,
         type,
         quantity,
         reason,

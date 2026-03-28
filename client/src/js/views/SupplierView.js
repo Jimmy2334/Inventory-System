@@ -205,16 +205,16 @@ export class SupplierView {
       <tr>
         <td>${this._esc(s.name)}</td>
         <td>${this._esc(s.contact)}</td>
-        <td>${this._esc(s.phone || '—')}</td>
+        <td style="white-space: nowrap;">${this._esc(s.phone || '—')}</td>
         <td>
           <a href="mailto:${this._esc(s.email)}" style="color:var(--brand);">
             ${this._esc(s.email)}
           </a>
         </td>
         <td>
-          <span class="badge bg-info text-dark rounded-pill">${counts[i]}</span>
+          <span class="badge bg-info text-white rounded-pill">${counts[i]}</span>
         </td>
-        <td>
+        <td style="white-space: nowrap;">
           <button class="btn btn-sm btn-outline-primary me-1"
                   data-action="edit" data-id="${s.id}" title="Edit">
             <i class="bi bi-pencil"></i>

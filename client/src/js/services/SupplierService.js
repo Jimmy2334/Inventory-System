@@ -38,7 +38,7 @@ export const SupplierService = {
     };
 
     const created = await StorageManager.create(RESOURCE, supplier);
-    await ActivityLogService.log('supplier_add', `Added supplier: ${supplier.name}`);
+    await ActivityLogService.log('supplier added', `Added supplier: ${supplier.name}`);
     return { ok: true, supplier: created };
   },
 
@@ -65,7 +65,7 @@ export const SupplierService = {
     };
 
     const saved = await StorageManager.update(RESOURCE, id, updated);
-    await ActivityLogService.log('supplier_update', `Updated supplier: ${updated.name}`);
+    await ActivityLogService.log('supplier edited', `Updated supplier: ${updated.name}`);
     return { ok: true, supplier: saved };
   },
 
@@ -80,7 +80,7 @@ export const SupplierService = {
 
     const supplier = await StorageManager.getById(RESOURCE, id);
     await StorageManager.delete(RESOURCE, id);
-    await ActivityLogService.log('supplier_delete', `Deleted supplier: ${supplier.name}`);
+    await ActivityLogService.log('supplier deleted', `Deleted supplier: ${supplier.name}`);
     return { ok: true };
   },
 

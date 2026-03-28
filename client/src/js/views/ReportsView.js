@@ -7,7 +7,7 @@ export class ReportsView {
 
   render(container) {
     const pageTitle = document.getElementById("page-title");
-    if (pageTitle) pageTitle.textContent = "Dashboard";
+    if (pageTitle) pageTitle.textContent = "Reports";
 
     container.innerHTML = `
       <div class="d-flex justify-content-center align-items-center" style="min-height: 300px;">
@@ -37,10 +37,9 @@ export class ReportsView {
 
   template(lowStock, valuation) {
     return `
-      <div class="container-fluid p-4">
+      <div class="container-fluid pt-4 px-0">
 
-        <!-- Tabs -->
-        <div class="d-flex gap-2 mb-4">
+        <div class="d-flex mb-4 flex-column flex-sm-row gap-3 gap-md-2">
           <button class="tab-btn active-tab" data-target="low-stock-panel">
             <i class="bi bi-exclamation-triangle me-1"></i> Low-stock report
           </button>
@@ -49,7 +48,6 @@ export class ReportsView {
           </button>
         </div>
 
-        <!-- Low Stock Panel -->
         <div id="low-stock-panel" class="report-panel">
 
           ${
@@ -85,7 +83,7 @@ export class ReportsView {
                     lowStock.length > 0
                       ? lowStock
                           .map((p) => {
-                            const reorderLevel = p.reorderLevel || 10;
+                            const reorderLevel = p.reorder || 10;
                             const shortage = p.quantity - reorderLevel;
                             const isHighShortage = shortage <= -8;
                             const rowClass = isHighShortage
@@ -95,16 +93,16 @@ export class ReportsView {
                                 : "";
                             return `
                           <tr class="${rowClass}">
-                            <td>${p.name}</td>
-                            <td><span class="sku-badge">${p.sku}</span></td>
+                            <td style="white-space: nowrap;">${p.name}</td>
+                            <td style="white-space: nowrap;"><span class="sku-badge">${p.sku}</span></td>
                             <td>${p.quantity}</td>
                             <td>${reorderLevel}</td>
-                            <td>
+                            <td style="white-space: nowrap;">
                               <span class="shortage-badge ${shortage < 0 ? "shortage-negative" : "shortage-zero"}">
                                 ${shortage} units
                               </span>
                             </td>
-                            <td>${p.supplierName || "—"}</td>
+                            <td style="white-space: nowrap;">${p.supplierName || "—"}</td>
                           </tr>
                         `;
                           })
@@ -117,7 +115,6 @@ export class ReportsView {
           </div>
         </div>
 
-        <!-- Inventory Value Panel -->
         <div id="valuation-panel" class="report-panel" style="display:none;">
           <div class="report-card">
             <div class="report-card-header d-flex justify-content-between align-items-center">
@@ -146,9 +143,9 @@ export class ReportsView {
                     .map(
                       (p) => `
                     <tr>
-                      <td>${p.name}</td>
-                      <td><span class="sku-badge">${p.sku}</span></td>
-                      <td>${p.categoryName}</td>
+                      <td style="white-space: nowrap;">${p.name}</td>
+                      <td style="white-space: nowrap;"><span class="sku-badge">${p.sku}</span></td>
+                      <td style="white-space: nowrap;">${p.categoryName}</td>
                       <td>$${(p.price || 0).toFixed(2)}</td>
                       <td>${p.quantity}</td>
                       <td class="stock-value-cell">$${p.stockValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
@@ -254,10 +251,10 @@ export class ReportsView {
 
         /* ── Row highlights for low stock ── */
         .row-high-shortage {
-          background: #fffbeb !important;
+          background: #FEF9C3 !important;
         }
         .row-low-shortage {
-          background: #fefce8 !important;
+          background: #FEF9C3 !important;
         }
 
         /* ── SKU Badge ── */

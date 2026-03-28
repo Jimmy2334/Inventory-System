@@ -10,14 +10,9 @@ export class StockAdjustView {
     this.products = [];
     this.adjustments = [];
   }
-
-  async render(container) {
-    this.products = await this.productService.getAll();
-    this.adjustments = await this.inventoryService.getAdjustmentHistory();
-    document.getElementById("page-title").innerText = "Stock Adjustments";
-    // Paste your HTML section here — just wrap in backticks
-    container.innerHTML = `
-      <div class="row g-3">
+  template(products, adjustments) {
+    console.log(products, adjustments);
+    return `<div class="row g-3">
         <div class="col-lg-5 col-12">
           <div class="card">
             <div class="card-header">
@@ -29,7 +24,7 @@ export class StockAdjustView {
                   <label class="form-label" for="adj-product">Product <span class="text-danger">*</span></label>
                   <select id="adj-product" class="form-select" required>
                     <option value="">Select a product...</option>
-                    ${this.products.map((product) => `<option value="${product.id}">${product.name}</option>`).join("")}
+                    ${products?.length > 0 ? `${products.map((product) => `<option value="${product.id}">${product.name}</option>`).join("")}` : `<option value="">No products found</option>`}
                   </select>
                 </div>
                 <div class="row g-2 mb-3">
@@ -67,65 +62,94 @@ export class StockAdjustView {
             </div>
             <div class="card-body p-0">
               <div class="table-responsive">
-                <table class="table mb-0">
+                <table class="table table-hover mb-0">
                   <thead>
                     <tr>
-                      <th>Product</th><th>Type</th>
-                      <th>Change</th><th>Reason</th><th>Date</th>
+                      <th>Date</th><th>Product</th><th>Type</th>
+                      <th>Change</th><th>Reason</th>
                     </tr>
                   </thead>
                   <tbody id="adj-history-tbody">
                   ${
-                    this.adjustments.length > 0
-                      ? this.adjustments
-                          .map(
-                            (adj) => `
-                          <tr>
-                            <td>
-                              <div>${adj.productName}</div>
-                              <div
-                                class="text-muted mt-1"
-                                style="font-size: 11px"
-                              >
-                                ${adj.productCode}
-                              </div>
-                            </td>
-                            <td>
-                              <span class="badge ${adj.type === "increase" ? "bg-success" : "bg-danger"}">
-                                ${adj.type.charAt(0).toUpperCase() + adj.type.slice(1)}
-                              </span>
-                            </td>
-                            <td class="${adj.type === "increase" ? "text-success" : "text-danger"}">
-                              ${adj.type === "increase" ? "+" : "-"}${adj.quantity}
-                            </td>
-                            <td style="max-width: 130px;" title="${adj.reason}">
-                              <div class="text-truncate">${adj.reason}</div>
-                            </td>
-                            <td class="text-muted" style="font-size: 12px">
-                              ${new Date(adj.date).toLocaleDateString()} ${new Date(adj.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                            </td>
-                          </tr>
-                      `,
-                          )
-                          .join("")
+                    adjustments?.length > 0
+                      ? this.renderRows(adjustments)
                       : ` <tr><td colspan="5" class="text-center text-muted py-4">
                       No adjustments yet.
                     </td></tr>`
                   }
-                   
                   </tbody>
                 </table>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    `;
-
-
-    this.attachEvents(container);
+      </div>`;
   }
 
+  async render(container) {
+    document.getElementById("page-title").innerText = "Stock Adjustments";
+    // Paste your HTML section here — just wrap in backticks
+    container.innerHTML = `
+        <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>    
+    `;
+    this.loadData(container);
+  }
+  renderRows(adjustments) {
+    return adjustments
+      .map(
+        (adj) => `
+          <tr>
+          <td class="text-muted" style="font-size: 12px;">
+            ${new Date(adj.date).toLocaleDateString()} ${new Date(adj.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            </td>
+            <td style="white-space: nowrap;">
+              <div>${adj.productName}</div>
+              <div
+                class="text-muted mt-1"
+                style="font-size: 11px"
+              >
+                ${adj.productSku}
+              </div>
+            </td>
+            <td>
+              <span class="badge ${adj.type === "increase" ? "bg-success" : "bg-danger"}">
+                ${adj.type.charAt(0).toUpperCase() + adj.type.slice(1)}
+              </span>
+            </td>
+            <td class="${adj.type === "increase" ? "text-success" : "text-danger"}">
+              ${adj.type === "increase" ? "+" : "-"}${adj.quantity}
+            </td>
+            
+            <td 
+            style="
+                -webkit-line-clamp: 5;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                max-width: 400px;"
+                title="${adj.reason}">
+              <div>${adj.reason}</div>
+            </td>
+          </tr>
+      `,
+      )
+      .join("");
+  }
+  async loadData(container) {
+    try {
+      this.products = await this.productService.getAll();
+      this.adjustments = await this.inventoryService.getAdjustmentHistory();
+      container.innerHTML = this.template(this.products, this.adjustments);
+      this.attachEvents(container);
+    } catch (error) {
+      container.innerHTML = `
+        <div class="alert alert-danger m-4">
+          Failed to load stock adjustments. Please check if the server is running.
+        </div>
+      `;
+    }
+  }
   attachEvents(container) {
     const productSelect = container.querySelector("#adj-product");
     const typeSelect = container.querySelector("#adj-type");
@@ -182,13 +206,21 @@ export class StockAdjustView {
       const type = typeSelect.value;
       const amount = parseInt(amountInput.value);
       const reason = reasonInput.value.trim();
+      const product = this.products.find((p) => p.id === productId);
       if (!productId || !type || !amount || !reason) {
         errorBox.innerText = "Please fill in all fields.";
         errorBox.classList.remove("d-none");
         return;
       }
       try {
-        await this.inventoryService.adjustStock(productId, type, amount, reason, this.products.find(p => p.id === productId).name);
+        await this.inventoryService.adjustStock(
+          productId,
+          type,
+          amount,
+          reason,
+          product.name,
+          product.sku,
+        );
         // Optionally, reset the form or show a success message
       } catch (error) {
         errorBox.innerText = error.message;
@@ -200,7 +232,7 @@ export class StockAdjustView {
       reasonInput.value = "";
       previewBox.classList.add("d-none");
       errorBox.classList.add("d-none");
-      this.render(container);
+      this.loadData(container);
       //^update low stock badge in sidebar
       updateLowStockBadge();
     });

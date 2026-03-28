@@ -83,7 +83,7 @@ export class ProductView {
           </div>
         </div>
         <div class="card-body p-0">
-          <div class="table-responsive-wrapper">
+          <div class="table-responsive">
             <table class="table mb-0">
               <thead>
                 <tr>
@@ -141,8 +141,12 @@ export class ProductView {
               <input type="number" id="product-price" class="form-control" min="0" step="0.01" placeholder="0.00" required/>
             </div>
             <div class="col-md-4">
-              <label class="form-label">Quantity <span class="text-danger">*</span></label>
-              <input type="number" id="product-qty" class="form-control" min="0" placeholder="0" required/>
+              <label class="form-label">Quantity <span id="qty-asterisk" class="text-danger">*</span></label>
+              <div id="qty-input-container">
+                <input type="number" id="product-qty" class="form-control" min="0" placeholder="0" required/>
+              </div>
+              <div id="qty-display-container" class="form-control bg-light d-none"></div>
+              <div id="qty-help" class="form-text text-warning d-none" style="font-size: 12px;">Edit via Stock Adjustments</div>
             </div>
             <div class="col-md-4">
               <label class="form-label">Reorder level <span class="text-danger">*</span></label>
@@ -194,7 +198,7 @@ export class ProductView {
         return `
         <tr class="${rowClass}">
           <td>${product.name}</td>
-          <td><code>${product.sku}</code></td>
+          <td style="white-space: nowrap;"><code>${product.sku}</code></td>
           <td>${product.category}</td>
           <td>${product.supplier ?? "--"}</td>
           <td>$${product.price}</td>
@@ -258,7 +262,7 @@ export class ProductView {
           deleteModal.hide();
           // wait a tiny bit to avoid bootstrap backdrop stuck issue before replacing DOM
           setTimeout(async () => {
-            await this.render(this.container);
+            await this.loadData(this.container);
           }, 150);
         } catch (err) {
           errBox.textContent = err.message;
@@ -283,7 +287,7 @@ export class ProductView {
           newCategory.value = "";
           //hide error div
           error.classList.add("d-none");
-          await this.render(this.container);
+          await this.loadData(this.container);
         } catch (err) {
           error.textContent = err.message;
           error.classList.remove("d-none");
@@ -338,7 +342,7 @@ export class ProductView {
               await this.categoryService.edit(categoryId, newCategory);
               //hide error div
               error.classList.add("d-none");
-              await this.render(this.container);
+              await this.loadData(this.container);
             } catch (err) {
               error.textContent = err.message;
               error.classList.remove("d-none");
@@ -348,7 +352,7 @@ export class ProductView {
         badge
           .querySelector(".btn-cancel-edit")
           .addEventListener("click", async (e) => {
-            await this.render(this.container);
+            await this.loadData(this.container);
           });
       });
     });
@@ -361,17 +365,24 @@ export class ProductView {
         const form = document.getElementById("productForm");
 
         try {
+          const editProductId = form.dataset.editProductId;
+          let quantityVal;
+          if (editProductId) {
+             const existingProduct = this.products.find(p => p.id === editProductId);
+             quantityVal = existingProduct ? existingProduct.quantity : 0;
+          } else {
+             quantityVal = parseInt(document.getElementById("product-qty").value);
+          }
+
           const product = {
             name: document.getElementById("product-name").value.trim(),
             sku: document.getElementById("product-sku").value.trim(),
             categoryId: document.getElementById("product-category").value,
             supplierId: document.getElementById("product-supplier").value,
             price: parseFloat(document.getElementById("product-price").value),
-            quantity: parseInt(document.getElementById("product-qty").value),
+            quantity: quantityVal,
             reorder: parseInt(document.getElementById("product-reorder").value),
           };
-
-          const editProductId = form.dataset.editProductId;
 
           if (editProductId) {
             //  edit mode
@@ -388,7 +399,7 @@ export class ProductView {
             document.getElementById("productModal"),
           ).hide();
           error.classList.add("d-none");
-          await this.render(this.container);
+          await this.loadData(this.container);
         } catch (err) {
           error.textContent = err.message;
           error.classList.remove("d-none");
@@ -436,7 +447,20 @@ export class ProductView {
         document.getElementById("product-supplier").value =
           editProduct.supplierId;
         document.getElementById("product-price").value = editProduct.price;
-        document.getElementById("product-qty").value = editProduct.quantity;
+        
+        document.getElementById("qty-input-container").classList.add("d-none");
+        document.getElementById("product-qty").required = false;
+        
+        const displayContainer = document.getElementById("qty-display-container");
+        displayContainer.textContent = editProduct.quantity;
+        displayContainer.classList.remove("d-none");
+
+        const qtyHelp = document.getElementById("qty-help");
+        if(qtyHelp) qtyHelp.classList.remove("d-none");
+        
+        const qtyAsterisk = document.getElementById("qty-asterisk");
+        if(qtyAsterisk) qtyAsterisk.classList.add("d-none");
+
         document.getElementById("product-reorder").value = editProduct.reorder;
       });
     });
@@ -447,6 +471,20 @@ export class ProductView {
       delete form.dataset.editProductId;
       form.reset();
       document.getElementById("productModalLabel").textContent = "Add product";
+      
+      document.getElementById("qty-input-container").classList.remove("d-none");
+      document.getElementById("product-qty").required = true;
+      
+      const displayContainer = document.getElementById("qty-display-container");
+      displayContainer.classList.add("d-none");
+      displayContainer.textContent = "";
+
+      const qtyHelp = document.getElementById("qty-help");
+      if(qtyHelp) qtyHelp.classList.add("d-none");
+      
+      const qtyAsterisk = document.getElementById("qty-asterisk");
+      if(qtyAsterisk) qtyAsterisk.classList.remove("d-none");
+
       // hide error
       document.getElementById("productFormError").classList.add("d-none");
     });
@@ -474,6 +512,16 @@ export class ProductView {
   /******************************************************************************************************************* */
   async render(container) {
     this.container = container; // save it
+    document.getElementById("page-title").innerText = "Products";
+    container.innerHTML = `
+        <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>    
+    `;
+    this.loadData(container);
+  }
+
+  async loadData(container) {
     try {
       const [products, categories,suppliers] = await Promise.all([
         this.productService.getAll(),
@@ -488,7 +536,7 @@ export class ProductView {
       this.attachEvents();
     } catch (err) {
       console.error(err);
-      container.innerHTML = `<div class="alert alert-danger">Error loading data: ${err.message}</div>`;
+      container.innerHTML = `<div class="alert alert-danger m-4">Error loading data: ${err.message}</div>`;
     }
   }
 }

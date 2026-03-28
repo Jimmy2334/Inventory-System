@@ -34,8 +34,8 @@ export class OrderView {
 
             <div class="btn-group btn-group-sm" id="order-filter-tabs">
               <button type="button" class="btn btn-outline-secondary active" data-filter="all">All</button>
-              <button type="button" class="btn btn-outline-secondary" data-filter="Pending">Pending</button>
-              <button type="button" class="btn btn-outline-secondary" data-filter="Received">Received</button>
+              <button type="button" class="btn btn-outline-secondary" data-filter="pending">Pending</button>
+              <button type="button" class="btn btn-outline-secondary" data-filter="received">Received</button>
             </div>
 
             <button id="btn-add-order" class="btn btn-primary btn-sm">
@@ -234,7 +234,7 @@ export class OrderView {
 
     // Status filter
     if (filter !== 'all') {
-      orders = orders.filter(o => o.status === filter);
+      orders = orders.filter(o => o.status.toLowerCase() === filter.toLowerCase());
     }
 
     // Search filter — runs against resolved names not raw ids
@@ -272,15 +272,15 @@ export class OrderView {
               ${this._esc(o.id.slice(0, 8))}
             </span>
           </td>
-          <td>${this._esc(supplierName)}</td>
+          <td style="white-space: nowrap;">${this._esc(supplierName)}</td>
           <td>
-            <div>${this._esc(productName)}</div>
+            <div style="white-space: nowrap;">${this._esc(productName)}</div>
             <div class="text-muted" style="font-size:11px;">${this._esc(productSku)}</div>
           </td>
           <td class="text-center">${o.quantity}</td>
-          <td>${this._formatDate(o.orderDate)}</td>
+          <td style="white-space: nowrap;">${this._formatDate(o.orderDate)}</td>
           <td>${this._statusBadge(o.status)}</td>
-          <td>${this._actionButtons(o)}</td>
+          <td style="white-space: nowrap;">${this._actionButtons(o)}</td>
         </tr>
       `;
     }).join('');
@@ -292,15 +292,15 @@ export class OrderView {
 
   _statusBadge(status) {
     const map = {
-      Pending  : 'bg-warning text-dark',
-      Received : 'bg-success',
-      Cancelled: 'bg-secondary',
+      pending  : 'bg-warning text-dark',
+      received : 'bg-success',
+      cancelled: 'bg-secondary',
     };
-    return `<span class="badge ${map[status] ?? 'bg-secondary'}">${status}</span>`;
+    return `<span class="badge ${map[status.toLowerCase()] ?? 'bg-secondary'}">${status[0].toUpperCase() + status.slice(1)}</span>`;
   }
 
   _actionButtons(order) {
-    if (order.status === 'Pending' || order.status === 'pending') {
+    if (order.status.toLowerCase() === 'pending') {
       return `
         <button class="btn btn-sm btn-success me-1"
                 data-action="receive" data-id="${order.id}">
@@ -312,7 +312,7 @@ export class OrderView {
         </button>
       `;
     }
-    if (order.status === 'Cancelled' || order.status === 'cancelled') {
+    if (order.status.toLowerCase() === 'cancelled') {
       return `
         <button class="btn btn-sm btn-outline-danger"
                 data-action="delete" data-id="${order.id}">
