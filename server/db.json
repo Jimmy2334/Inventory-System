@@ -31,6 +31,10 @@
     {
       "id": "cat-008",
       "name": "Power & Charging"
+    },
+    {
+      "name": "k",
+      "id": "8a60af50-1e73-4c91-9390-6d9d01820846"
     }
   ],
   "suppliers": [
@@ -438,6 +442,114 @@
       "message": "admin: Adjusted stock for product Laptop Stand Aluminium: increase 11. Reason: fdsgdsfgdsg",
       "timestamp": "2026-03-27T03:53:50.218Z",
       "action": "stock adjustment"
+    },
+    {
+      "id": "419e8cab-261c-4943-9b67-2b25cb48d34f",
+      "message": "admin: Added product: mobile",
+      "timestamp": "2026-04-01T07:28:08.453Z",
+      "action": "product added"
+    },
+    {
+      "id": "9fefe4be-96f4-4713-841d-dca68a60427d",
+      "message": "admin: Edited product: mobile",
+      "timestamp": "2026-04-01T07:36:59.726Z",
+      "action": "product edited"
+    },
+    {
+      "id": "3f0b21ef-3c0d-4542-91eb-404de2be01ed",
+      "message": "admin: Edited product: mobile",
+      "timestamp": "2026-04-01T07:37:20.266Z",
+      "action": "product edited"
+    },
+    {
+      "id": "db236727-5887-4d09-93f7-9bc078e38b7a",
+      "message": "admin: Edited product: mobile",
+      "timestamp": "2026-04-01T07:37:27.085Z",
+      "action": "product edited"
+    },
+    {
+      "id": "a8d0b400-8b07-4c91-931b-c1829d7d6d39",
+      "message": "admin: Edited product: mobile",
+      "timestamp": "2026-04-01T07:37:52.598Z",
+      "action": "product edited"
+    },
+    {
+      "id": "807a0ef2-b38d-474a-8a90-14986266f86b",
+      "message": "admin: Edited product: mobile",
+      "timestamp": "2026-04-01T07:38:04.468Z",
+      "action": "product edited"
+    },
+    {
+      "id": "8f0346f9-d633-415d-a48b-91280e82930b",
+      "message": "admin: Added product: mobile5",
+      "timestamp": "2026-04-01T07:39:18.065Z",
+      "action": "product added"
+    },
+    {
+      "id": "95ace00d-71de-4727-908f-8c87eef0a040",
+      "message": "admin: Edited product: mobile",
+      "timestamp": "2026-04-01T07:39:28.667Z",
+      "action": "product edited"
+    },
+    {
+      "id": "5084aad9-d429-4c51-a718-c077041fb33e",
+      "message": "admin: Added product: mobile",
+      "timestamp": "2026-04-01T07:40:09.423Z",
+      "action": "product added"
+    },
+    {
+      "id": "0f2e6bc4-7468-4cc1-8030-2c222458f3f1",
+      "message": "admin: Deleted product: mobile",
+      "timestamp": "2026-04-01T07:40:14.857Z",
+      "action": "product deleted"
+    },
+    {
+      "id": "ca507fd4-c922-4061-91f6-88be37b83c1c",
+      "message": "admin: Deleted product: mobile",
+      "timestamp": "2026-04-01T07:40:18.053Z",
+      "action": "product deleted"
+    },
+    {
+      "id": "1a90e91a-75b9-49bb-9c32-88a1aecd3f23",
+      "message": "admin: Deleted product: mobile",
+      "timestamp": "2026-04-01T07:40:21.488Z",
+      "action": "product deleted"
+    },
+    {
+      "id": "f6d7a061-14b2-415d-af97-8cb34fcb5442",
+      "message": "admin: Added product: mobile",
+      "timestamp": "2026-04-01T07:40:46.164Z",
+      "action": "product added"
+    },
+    {
+      "id": "a56f1723-0f05-4eaa-b5f7-511e917b0f93",
+      "message": "admin: Added category: el",
+      "timestamp": "2026-04-01T07:41:33.127Z",
+      "action": "category added"
+    },
+    {
+      "id": "a9fdd8d1-77a1-4f97-bccb-b82489cafa25",
+      "message": "admin: Deleted category: el",
+      "timestamp": "2026-04-01T07:41:48.788Z",
+      "action": "category deleted"
+    },
+    {
+      "id": "63cad3ee-529a-476e-b617-3408c2cb5f88",
+      "message": "admin: Deleted product: mobile",
+      "timestamp": "2026-04-01T07:41:53.432Z",
+      "action": "product deleted"
+    },
+    {
+      "id": "291e4f49-2f77-4e0f-9c21-69663e917871",
+      "message": "admin: Added category: hh",
+      "timestamp": "2026-04-01T07:52:27.870Z",
+      "action": "category added"
+    },
+    {
+      "id": "4d090040-c4fc-4598-9d54-d92b98bdb763",
+      "message": "admin: Edited category from hh to k",
+      "timestamp": "2026-04-01T07:52:38.586Z",
+      "action": "category edited"
     }
   ],
   "users": [

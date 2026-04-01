@@ -1,5 +1,6 @@
 import { OrderService }   from '../services/OrderService.js';
 import { StorageManager } from '../utils/StorageManager.js';
+import { updateLowStockBadge } from '../utils/helpers.js';
 
 export class OrderView {
 
@@ -282,14 +283,14 @@ export class OrderView {
     const tbody = document.getElementById('orders-tbody');
     if (!tbody) return;
 
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="7" class="text-center py-4">
-          <div class="spinner-border spinner-border-sm text-secondary me-2"></div>
-          Loading…
-        </td>
-      </tr>
-    `;
+    // tbody.innerHTML = `
+    //   <tr>
+    //     <td colspan="7" class="text-center py-4">
+    //       <div class="spinner-border spinner-border-sm text-secondary me-2"></div>
+    //       Loading…
+    //     </td>
+    //   </tr>
+    // `;
 
     const [orders, suppliers, products] = await Promise.all([
       OrderService.getAll(),
@@ -543,6 +544,7 @@ export class OrderView {
     if (result.ok) {
       await this._refreshTable();
       this._toast('Order received — stock updated.', 'success');
+      updateLowStockBadge();
     } else {
       this._toast(result.error, 'danger');
     }

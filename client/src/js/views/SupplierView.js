@@ -234,14 +234,14 @@ export class SupplierView {
     const tbody = document.getElementById('suppliers-tbody');
     if (!tbody) return;
 
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="6" class="text-center py-4">
-          <div class="spinner-border spinner-border-sm text-secondary me-2"></div>
-          Loading…
-        </td>
-      </tr>
-    `;
+    // tbody.innerHTML = `
+    //   <tr>
+    //     <td colspan="6" class="text-center py-4">
+    //       <div class="spinner-border spinner-border-sm text-secondary me-2"></div>
+    //       Loading…
+    //     </td>
+    //   </tr>
+    // `;
 
     const suppliers = await SupplierService.getAll();
     const counts    = await Promise.all(
