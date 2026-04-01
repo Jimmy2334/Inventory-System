@@ -24,6 +24,17 @@ export class ProductService {
 
   /**************add product methoud***********/
   async add(product) {
+    //  validate inputs
+    if (!product.name) throw new Error("Name is required");
+    if (!product.sku) throw new Error("SKU is required");
+    if (!product.categoryId) throw new Error("Category is required");
+    if (!product.supplierId) throw new Error("Supplier is required");
+    if (isNaN(product.price) || product.price <= 0)
+      throw new Error("Price must be a positive number");
+    if (isNaN(product.quantity) || product.quantity < 0)
+      throw new Error("Quantity must be 0 or more");
+    if (isNaN(product.reorder) || product.reorder < 0)
+      throw new Error("Reorder point must be 0 or more");
     //getAll products
     const products = await this.getAll();
 
@@ -39,7 +50,10 @@ export class ProductService {
     await StorageManager.create("products", product);
 
     //save the activity
-    await ActivityLogService.log('product added',`Added product: ${product.name}`);
+    await ActivityLogService.log(
+      "product added",
+      `Added product: ${product.name}`,
+    );
   }
 
   /**************delete product methoud***********/
@@ -55,11 +69,23 @@ export class ProductService {
     await StorageManager.delete("products", productId);
 
     //save the activity
-    await ActivityLogService.log('product deleted',`Deleted product: ${product.name}`);
+    await ActivityLogService.log(
+      "product deleted",
+      `Deleted product: ${product.name}`,
+    );
   }
 
   /**************edit product methoud***********/
   async edit(productId, updatedData) {
+    //  validate inputs
+    if (!product.name) throw new Error("Name is required");
+    if (!product.sku) throw new Error("SKU is required");
+    if (!product.categoryId) throw new Error("Category is required");
+    if (!product.supplierId) throw new Error("Supplier is required");
+    if (isNaN(product.price) || product.price <= 0)
+      throw new Error("Price must be a positive number");
+    if (isNaN(product.reorder) || product.reorder < 0)
+      throw new Error("Reorder point must be 0 or more");
     let product;
     try {
       product = await StorageManager.getById("products", productId);
@@ -87,6 +113,9 @@ export class ProductService {
 
     //save the activity
     const newName = updatedData.name || product.name;
-    await ActivityLogService.log('product edited',`Edited product: ${newName}`);
+    await ActivityLogService.log(
+      "product edited",
+      `Edited product: ${newName}`,
+    );
   }
 }
