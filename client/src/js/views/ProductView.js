@@ -8,9 +8,7 @@ export class ProductView {
     this.productService = new ProductService();
     this.categoryService = new CategoryService();
   }
-  template(products, categories,suppliers) {
-    /******For test only  */
-
+  template(products, categories, suppliers) {
     /******************** */
     document.getElementById("page-title").innerText = "Products";
     return `
@@ -131,15 +129,15 @@ export class ProductView {
             </div>
             <!--  /****************for supplier add exact the line above of map required*************/  -->
             <div class="col-md-6">
-              <label class="form-label">Supplier</label>
-              <select id="product-supplier" class="form-select" >
+              <label class="form-label">Supplier <span class="text-danger">*</span></label>
+              <select id="product-supplier" class="form-select" required>
                 <option value="">-- Select supplier --</option>
                 ${suppliers.map((s) => `<option value="${s.id}">${s.name}</option>`).join("")}
               </select>
             </div>
             <div class="col-md-4">
               <label class="form-label">Price ($) <span class="text-danger">*</span></label>
-              <input type="number" id="product-price" class="form-control" min="0" step="0.01" placeholder="0.00" required/>
+              <input type="number" id="product-price" class="form-control" min="1" step="0.01" placeholder="0.00" required/>
             </div>
             <div class="col-md-4">
               <label class="form-label">Quantity <span id="qty-asterisk" class="text-danger">*</span></label>
@@ -244,7 +242,9 @@ export class ProductView {
     let deleteTargetId = null;
     let deleteTargetType = null;
     const deleteModalEl = document.getElementById("deleteConfirmModal");
-    const deleteModal = deleteModalEl ? new bootstrap.Modal(deleteModalEl) : null;
+    const deleteModal = deleteModalEl
+      ? new bootstrap.Modal(deleteModalEl)
+      : null;
     const btnConfirmDelete = document.getElementById("btn-confirm-delete");
     const confirmMessage = document.getElementById("deleteConfirmMessage");
 
@@ -253,7 +253,7 @@ export class ProductView {
         const errBox = document.getElementById("deleteConfirmError");
         errBox.classList.add("d-none");
         btnConfirmDelete.disabled = true;
-        
+
         try {
           if (deleteTargetType === "category") {
             await this.categoryService.delete(deleteTargetId);
@@ -303,10 +303,10 @@ export class ProductView {
         const category = e.currentTarget.dataset.category;
         deleteTargetId = e.currentTarget.dataset.id;
         e.currentTarget.blur();
-        
+
         const errBox = document.getElementById("deleteConfirmError");
         if (errBox) errBox.classList.add("d-none");
-        
+
         confirmMessage.innerHTML = `Are you sure you want to delete the <strong>${category}</strong> category?`;
         if (deleteModal) deleteModal.show();
       });
@@ -370,10 +370,14 @@ export class ProductView {
           const editProductId = form.dataset.editProductId;
           let quantityVal;
           if (editProductId) {
-             const existingProduct = this.products.find(p => p.id === editProductId);
-             quantityVal = existingProduct ? existingProduct.quantity : 0;
+            const existingProduct = this.products.find(
+              (p) => p.id === editProductId,
+            );
+            quantityVal = existingProduct ? existingProduct.quantity : 0;
           } else {
-             quantityVal = parseInt(document.getElementById("product-qty").value);
+            quantityVal = parseInt(
+              document.getElementById("product-qty").value,
+            );
           }
 
           const product = {
@@ -413,10 +417,10 @@ export class ProductView {
       btn.addEventListener("click", (e) => {
         deleteTargetType = "product";
         deleteTargetId = e.currentTarget.dataset.id;
-        
+
         const errBox = document.getElementById("deleteConfirmError");
         if (errBox) errBox.classList.add("d-none");
-        
+
         confirmMessage.innerHTML = `Are you sure you want to delete this product?`;
         if (deleteModal) deleteModal.show();
       });
@@ -449,19 +453,21 @@ export class ProductView {
         document.getElementById("product-supplier").value =
           editProduct.supplierId;
         document.getElementById("product-price").value = editProduct.price;
-        
+
         document.getElementById("qty-input-container").classList.add("d-none");
         document.getElementById("product-qty").required = false;
-        
-        const displayContainer = document.getElementById("qty-display-container");
+
+        const displayContainer = document.getElementById(
+          "qty-display-container",
+        );
         displayContainer.textContent = editProduct.quantity;
         displayContainer.classList.remove("d-none");
 
         const qtyHelp = document.getElementById("qty-help");
-        if(qtyHelp) qtyHelp.classList.remove("d-none");
-        
+        if (qtyHelp) qtyHelp.classList.remove("d-none");
+
         const qtyAsterisk = document.getElementById("qty-asterisk");
-        if(qtyAsterisk) qtyAsterisk.classList.add("d-none");
+        if (qtyAsterisk) qtyAsterisk.classList.add("d-none");
 
         document.getElementById("product-reorder").value = editProduct.reorder;
       });
@@ -473,19 +479,19 @@ export class ProductView {
       delete form.dataset.editProductId;
       form.reset();
       document.getElementById("productModalLabel").textContent = "Add product";
-      
+
       document.getElementById("qty-input-container").classList.remove("d-none");
       document.getElementById("product-qty").required = true;
-      
+
       const displayContainer = document.getElementById("qty-display-container");
       displayContainer.classList.add("d-none");
       displayContainer.textContent = "";
 
       const qtyHelp = document.getElementById("qty-help");
-      if(qtyHelp) qtyHelp.classList.add("d-none");
-      
+      if (qtyHelp) qtyHelp.classList.add("d-none");
+
       const qtyAsterisk = document.getElementById("qty-asterisk");
-      if(qtyAsterisk) qtyAsterisk.classList.remove("d-none");
+      if (qtyAsterisk) qtyAsterisk.classList.remove("d-none");
 
       // hide error
       document.getElementById("productFormError").classList.add("d-none");
@@ -525,7 +531,7 @@ export class ProductView {
 
   async loadData(container) {
     try {
-      const [products, categories,suppliers] = await Promise.all([
+      const [products, categories, suppliers] = await Promise.all([
         this.productService.getAll(),
         this.categoryService.getAll(),
         SupplierService.getAll(),
@@ -534,7 +540,7 @@ export class ProductView {
       this.categories = categories;
       this.suppliers = suppliers;
 
-      container.innerHTML = this.template(products, categories,suppliers); // add suppliers
+      container.innerHTML = this.template(products, categories, suppliers); // add suppliers
       this.attachEvents();
     } catch (err) {
       console.error(err);
